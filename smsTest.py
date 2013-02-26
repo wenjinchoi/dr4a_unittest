@@ -5,31 +5,11 @@ import os
 import unittest
 from multiprocessing import Process
 
-from sqlite_parser import *
+from sqlite_utily import *
 from loadFunction import ScanSMSDB
-import SchemaTemplates
+import smsTemplates
 
 faked = False
-
-def createDB(path, smsSchema, auto_vacuum = 0):
-	if os.path.exists(path):
-		os.remove(path)
-	with sqlite3.connect(path) as conn:
-		curs = conn.cursor()
-		curs.execute('PRAGMA auto_vacuum = %d' % auto_vacuum)
-		curs.execute(smsSchema)
-		conn.commit()
-
-def isTableExists(db_file, table_name):
-	with sqlite3.connect(db_file) as conn:
-		curs = conn.cursor()
-		curs.execute('''SELECT COUNT(*)
-			FROM sqlite_master
-			WHERE type="table" and name="%s"''' % table_name)
-		if curs.fetchall()[0][0] > 0:
-			return True
-		else:
-			return False
 
 def fetchSMSNormalData(sqlite_file_path):
 	with sqlite3.connect(sqlite_file_path) as conn:
@@ -58,7 +38,7 @@ class SMSTestCase(unittest.TestCase):
 		在继承类中，需要覆盖此方法以构建针对不同测试设备的 TestCase
 		建议直接调用 initWithDeviceAndSchema 初始化方法
 		"""
-		self.initWithDeviceAndSchema(SchemaTemplates.smsSchema1)
+		self.initWithDeviceAndSchema(smsTemplates.smsSchema1)
 
 	def tearDown(self):
 		pass
@@ -71,7 +51,7 @@ class SMSTestCase(unittest.TestCase):
 				头文件，在 loadFunction.py 中实现了替换类 |class DeviceInfo|, 需通过构建该类
 				的对象作为此处的参数
 				schema 是用于创建Table的 schema, sms 的测试至少包含 sms 和 threads Table，
-				定义在 SchemaTemplates
+				定义在 smsTemplates
 		"""
 		self.faked = False
 
@@ -610,35 +590,35 @@ class SMSTestCase(unittest.TestCase):
 
 class HTC_G10_TestCase(SMSTestCase):
 	def setUp(self):
-		self.initWithDeviceAndSchema(SchemaTemplates.smsSchema2)
+		self.initWithDeviceAndSchema(smsTemplates.smsSchema2)
 
 class HTC_G12_TestCase(SMSTestCase):
 	def setUp(self):
-		self.initWithDeviceAndSchema(SchemaTemplates.smsSchema3)
+		self.initWithDeviceAndSchema(smsTemplates.smsSchema3)
 
 class Samsung_S5830__TestCase(SMSTestCase):
 	def setUp(self):
-		self.initWithDeviceAndSchema(SchemaTemplates.smsSchema4)
+		self.initWithDeviceAndSchema(smsTemplates.smsSchema4)
 
 class Motorola_XT883_TestCase(SMSTestCase):
 	def setUp(self):
-		self.initWithDeviceAndSchema(SchemaTemplates.smsSchema5)
+		self.initWithDeviceAndSchema(smsTemplates.smsSchema5)
 
 class MMotorola_ME722_TestCase(SMSTestCase):
 	def setUp(self):
-		self.initWithDeviceAndSchema(SchemaTemplates.smsSchema6)
+		self.initWithDeviceAndSchema(smsTemplates.smsSchema6)
 
 class LG_P990_TestCase(SMSTestCase):
 	def setUp(self):
-		self.initWithDeviceAndSchema(SchemaTemplates.smsSchema7)
+		self.initWithDeviceAndSchema(smsTemplates.smsSchema7)
 
 class Samsung_Note_GT_I9220_TestCase(SMSTestCase):
 	def setUp(self):
-		self.initWithDeviceAndSchema(SchemaTemplates.smsSchema8)
+		self.initWithDeviceAndSchema(smsTemplates.smsSchema8)
 
 class Samsung_Samsung_S5880_TestCase(SMSTestCase):
 	def setUp(self):
-		self.initWithDeviceAndSchema(SchemaTemplates.smsSchema9)
+		self.initWithDeviceAndSchema(smsTemplates.smsSchema9)
 
 if __name__ == '__main__':
 	unittest.main()

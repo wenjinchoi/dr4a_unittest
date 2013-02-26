@@ -1,7 +1,28 @@
 # -*- coding: UTF-8 -*-
 
+import os
 import sqlite3
 import struct
+
+def createDB(path, smsSchema, auto_vacuum = 0):
+	if os.path.exists(path):
+		os.remove(path)
+	with sqlite3.connect(path) as conn:
+		curs = conn.cursor()
+		curs.execute('PRAGMA auto_vacuum = %d' % auto_vacuum)
+		curs.execute(smsSchema)
+		conn.commit()
+
+def isTableExists(db_file, table_name):
+	with sqlite3.connect(db_file) as conn:
+		curs = conn.cursor()
+		curs.execute('''SELECT COUNT(*)
+			FROM sqlite_master
+			WHERE type="table" and name="%s"''' % table_name)
+		if curs.fetchall()[0][0] > 0:
+			return True
+		else:
+			return False
 
 def getPageSize(sqlite_file):
 	pagesize = 0
