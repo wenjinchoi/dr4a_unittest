@@ -1,5 +1,7 @@
 
 一、重要字段
+photo
+
 name
 常见格式：
 package_id null
@@ -19,7 +21,7 @@ data 9: 姓氏拼音
 data 10: 整型值, 1,?
 data 11: 整型值, 0,3,?
 data 12 - 14 为 null
-data 15 = data 1，
+data 15 = data 1 or photo blob
 data_sync1 - data_sync4 为 null，同步用的数据，不在数据恢复搜索范围内，
 	但这里的值是否会造成其他影响？
 
@@ -103,11 +105,21 @@ data 6: 自定义类型名称
 data 7 -15: null
 
 notes
+data 1: 主要数据, Notes
+data 2-15: null
 
 nickname
+data 1: 主要数据，Nickname
+data 2: ?, 整型值，例如 1
+data 3-15: null
 
 website
+data 1: 主要数据，Website
+data 2: ?, 整型值，例如 7
+data 3-15: null
 
-internetcall
+internetcall (sip_address)
+data 1: 主要数据, Internet Call
+data 2-15: null
 
 relationship

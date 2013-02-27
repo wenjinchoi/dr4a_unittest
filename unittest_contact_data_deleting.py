@@ -33,8 +33,8 @@ class ContactsDataDeletedTestCase(unittest.TestCase):
 
 	def insertNormalTestData(self, testData):
 		insertSQL = '''INSERT INTO data(
-			package_id,mimetype_id,raw_contact_id,data1)
-			VALUES (?, ?, ?, ?)'''
+			mimetype_id,raw_contact_id,data1)
+			VALUES (?, ?, ?)'''
 		self.insertTestDataWithSQL(insertSQL, testData)
 
 	def deleteDataTableWith_ID(self, id):
@@ -50,10 +50,10 @@ class ContactsDataDeletedTestCase(unittest.TestCase):
 	def checkResultWithTestDataNum(self, num):
 		pass
 
-	def testBase(self):
+	def testNameBasic(self):
 		testData = (
-			(1, 1, 1, "10086"),
-			(1, 1, 1, "13800138000"))
+			(6, 1, "10086"),
+			(6, 2, "13800138000"))
 
 		deleteRecordID = 2
 
