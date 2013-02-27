@@ -2,8 +2,10 @@
 
 import os, sys
 import time
+from multiprocessing import Process
 
 from ctypes import *
+
 
 class DeviceInfo(Structure):
     _fields_ = [("manufacturer", c_wchar_p),
@@ -21,7 +23,6 @@ class DeviceInfo(Structure):
 # pWSDBRecoveryCallbackHandle = pWSDBRecoveryCallback(WSDBRecoveryCallback);
 
 def redirect_stdout():
-    # print "Redirecting stdout"
     sys.stdout.flush() # <--- important when redirecting to files
     newstdout = os.dup(1)
     devnull = os.open(os.devnull, os.O_WRONLY)
@@ -38,34 +39,23 @@ def dlclose(handle):
    libdl = ctypes.CDLL("libdl.so")
    libdl.dlclose(handle)
 
-# TODO: need to set deviceInfo
-def ScanSMSDB(sms_file_path, rec_path):
-	if not os.path.exists('WSConfigerDB.db'):
-		print "Can not find WSConfigerDB.db"
-		return False
-
-	if not os.path.exists('WSDBRecovery.dll'):
-		print "Can not find WSDBRecovery.dll"
-		return False
-
-	if not os.path.exists(sms_file_path) or not os.path.exists(rec_path):
-		print "Source DB file path or Recovery Path not exists"
-		return False
-
-	pConfigFile = c_wchar_p('WSConfigerDB.db')
-	deviceInfo = DeviceInfo(c_wchar_p('sansung'),
-                   		    c_wchar_p('s5880'),
-                        	c_wchar_p('2.3.4'))
-	pDeviceInfo = addressof(deviceInfo)
+def scan_mmssms_db(deviceInfo, src_path, rec_path):
+	assert(os.path.exists("WSDBRecovery.dll"))
+	assert(os.path.exists("WSConfigerDB.db"))
 
 	saved_stdout = sys.stdout
 	redirect_stdout()
+
+	# Init WSDBRecovery
+	pConfigFile = c_wchar_p('WSConfigerDB.db')
+	pDeviceInfo = addressof(deviceInfo)
 
 	libdr = cdll.LoadLibrary("WSDBRecovery.dll")
 	if (libdr.WSDBRecoveryInit(pConfigFile, pDeviceInfo) != 0):
 		return False
 
-	pwszDBPath = c_wchar_p(sms_file_path)
+	# Scan and Output
+	pwszDBPath = c_wchar_p(src_path)
 	pwszSaveDBPath = c_wchar_p(rec_path)
 	scanType = c_int(1)
 	pFunc = c_void_p(0)
@@ -79,6 +69,13 @@ def ScanSMSDB(sms_file_path, rec_path):
 
 	return True
 
-
-
-
+# Using multiprocessing
+def parsingMmssmsByLoadLibrary(deviceInfo, input_db_path, output_db_file):
+	src_db_path = os.path.split(os.path.abspath(input_db_path))[0]
+	rec_db_path = os.path.split(os.path.abspath(output_db_file))[0]
+	# 使用 multiprocessing.Process 加载，主要避免调用动态库后，被解析的数据库文件无法删除
+	# 注意：若使用 threading 会导致访问内存的异常
+	p = Process(target=scan_mmssms_db,
+							args=(deviceInfo, src_db_path, rec_db_path))
+	p.start()
+	p.join()

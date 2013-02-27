@@ -4,8 +4,8 @@ import os
 import sqlite3
 import unittest
 
-from contactsTemplates import *
-from sqlite_utily import *
+from templates import contacts2_db_tmpl
+from sqlite_utils import *
 
 class ContactsDataDeletedTestCase(unittest.TestCase):
 	def setUp(self):

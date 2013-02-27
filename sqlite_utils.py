@@ -34,7 +34,8 @@ def getPageSize(sqlite_file):
 	return pagesize
 
 def pageHeader(sqlitePage):
-	(ptype, first_free_block_offset, cells_count, cell_offset) = struct.unpack(">BHHHx", sqlitePage[:8])
+	(ptype, first_free_block_offset, cells_count, cell_offset) = \
+		struct.unpack(">BHHHx", sqlitePage[:8])
 	return (ptype, first_free_block_offset, cells_count, cell_offset)
 
 # TODO: more smart...

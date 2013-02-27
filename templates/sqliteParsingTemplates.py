@@ -1,4 +1,4 @@
-
+# -*- coding: UTF-8 -*-
 
 SQL_TYPE_INT = 1
 SQL_TYPE_TEXT = 2

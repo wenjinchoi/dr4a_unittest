@@ -3,13 +3,12 @@
 import sqlite3
 import os
 import unittest
-from multiprocessing import Process
 
-from sqlite_utily import *
-from loadFunction import ScanSMSDB
-import smsTemplates
+from sqlite_utils import *
+from loadFunction import parsingMmssmsByLoadLibrary
+from templates import mmssms_db_tmpl
 
-faked = False
+faked = True
 
 def fetchSMSNormalData(sqlite_file_path):
 	with sqlite3.connect(sqlite_file_path) as conn:
@@ -20,17 +19,6 @@ def fetchSMSNormalData(sqlite_file_path):
 		results = curs.fetchall()
 		return results
 
-def parsingByLoadLibrary(input_db_path, output_db_file):
-	src_db_path = os.path.split(os.path.abspath(input_db_path))[0]
-	rec_db_path = os.path.split(os.path.abspath(output_db_file))[0]
-	# 使用 multiprocessing.Process 加载，主要避免调用动态库后，被解析的数据库文件无法删除
-	# 注意：若使用 threading 会导致访问内存的异常
-	p = Process(target=ScanSMSDB,
-							args=(src_db_path, rec_db_path))
-	p.start()
-	p.join()
-
-
 class SMSTestCase(unittest.TestCase):
 
 	def setUp(self):
@@ -38,7 +26,7 @@ class SMSTestCase(unittest.TestCase):
 		在继承类中，需要覆盖此方法以构建针对不同测试设备的 TestCase
 		建议直接调用 initWithDeviceAndSchema 初始化方法
 		"""
-		self.initWithDeviceAndSchema(smsTemplates.smsSchema1)
+		self.initWithDeviceAndSchema(mmssms_db_tmpl.testDevice9)
 
 	def tearDown(self):
 		pass
@@ -51,12 +39,12 @@ class SMSTestCase(unittest.TestCase):
 				头文件，在 loadFunction.py 中实现了替换类 |class DeviceInfo|, 需通过构建该类
 				的对象作为此处的参数
 				schema 是用于创建Table的 schema, sms 的测试至少包含 sms 和 threads Table，
-				定义在 smsTemplates
+				定义在 mmssms_db_tmpl
 		"""
 		self.faked = False
 
-		self.deviceInfo = ""
-		self.smsSchema = dictOfDeviceAndSchema
+		self.deviceInfo = dictOfDeviceAndSchema["deviceInfo"]
+		self.smsSchema = dictOfDeviceAndSchema["schema"]
 
 		if not os.path.exists('./src_db'): os.mkdir('./src_db')
 		if not os.path.exists('./rec_db'): os.mkdir('./rec_db')
@@ -72,7 +60,9 @@ class SMSTestCase(unittest.TestCase):
 	def parsing_db(self, intput_db_file, output_db_file):
 		""" 此处为实际调用程序功能的函数，若被测程序接口有变，则通过改动此函数来实现
 		"""
-		parsingByLoadLibrary(self.tmpdb_path, self.output_db_filepath)
+		parsingMmssmsByLoadLibrary(self.deviceInfo,
+												 			 self.tmpdb_path,
+												 			 self.output_db_filepath)
 
 	def insertAndDeleteLeftTheFirstOne(self, db_file, testData):
 		""" Use for fill the database |db_file| with |testData|,
@@ -114,6 +104,8 @@ class SMSTestCase(unittest.TestCase):
 			createDB(db_file, self.smsSchema)
 			with sqlite3.connect(db_file) as conn:
 				curs = conn.cursor()
+				insertSQL = '''insert into sms(address, thread_id, date, type, body)
+			 		values (?, ?, ?, ?, ?)'''
 				for n in xrange(len(testData)):
 					curs.execute(insertSQL, testData[n])
 				conn.commit()
@@ -590,35 +582,35 @@ class SMSTestCase(unittest.TestCase):
 
 class HTC_G10_TestCase(SMSTestCase):
 	def setUp(self):
-		self.initWithDeviceAndSchema(smsTemplates.smsSchema2)
+		self.initWithDeviceAndSchema(mmssms_db_tmpl.testDevice2)
 
 class HTC_G12_TestCase(SMSTestCase):
 	def setUp(self):
-		self.initWithDeviceAndSchema(smsTemplates.smsSchema3)
+		self.initWithDeviceAndSchema(mmssms_db_tmpl.testDevice3)
 
 class Samsung_S5830__TestCase(SMSTestCase):
 	def setUp(self):
-		self.initWithDeviceAndSchema(smsTemplates.smsSchema4)
+		self.initWithDeviceAndSchema(mmssms_db_tmpl.testDevice4)
 
 class Motorola_XT883_TestCase(SMSTestCase):
 	def setUp(self):
-		self.initWithDeviceAndSchema(smsTemplates.smsSchema5)
+		self.initWithDeviceAndSchema(mmssms_db_tmpl.testDevice5)
 
 class MMotorola_ME722_TestCase(SMSTestCase):
 	def setUp(self):
-		self.initWithDeviceAndSchema(smsTemplates.smsSchema6)
+		self.initWithDeviceAndSchema(mmssms_db_tmpl.testDevice6)
 
 class LG_P990_TestCase(SMSTestCase):
 	def setUp(self):
-		self.initWithDeviceAndSchema(smsTemplates.smsSchema7)
+		self.initWithDeviceAndSchema(mmssms_db_tmpl.testDevice7)
 
 class Samsung_Note_GT_I9220_TestCase(SMSTestCase):
 	def setUp(self):
-		self.initWithDeviceAndSchema(smsTemplates.smsSchema8)
+		self.initWithDeviceAndSchema(mmssms_db_tmpl.testDevice8)
 
 class Samsung_Samsung_S5880_TestCase(SMSTestCase):
 	def setUp(self):
-		self.initWithDeviceAndSchema(smsTemplates.smsSchema9)
+		self.initWithDeviceAndSchema(mmssms_db_tmpl.testDevice9)
 
 if __name__ == '__main__':
 	unittest.main()

@@ -1,5 +1,8 @@
+# -*- coding: UTF-8 -*-
+
 from ctypes import c_wchar_p
-from loadFunction import DeviceInfo
+
+from loadFunction import *
 
 # Base Test
 smsSchema1 = '''CREATE TABLE sms
@@ -97,11 +100,41 @@ smsSchema9 = '''CREATE TABLE sms
 	error_code INTEGER DEFAULT 0,seen INTEGER DEFAULT 0,
 	deletable INTEGER DEFAULT 0,delivery_date INTEGER)'''
 
-smsThreadTable = """CREATE TABLE threads (_id INTEGER PRIMARY KEY,
+threadSchema9 = """CREATE TABLE threads (_id INTEGER PRIMARY KEY,
 	date INTEGER DEFAULT 0,message_count INTEGER DEFAULT 0,recipient_ids TEXT,
 	snippet TEXT,snippet_cs INTEGER DEFAULT 0,read INTEGER DEFAULT 1,
 	type INTEGER DEFAULT 0,error INTEGER DEFAULT 0,
 	has_attachment INTEGER DEFAULT 0,unread_count INTEGER DEFAULT 0)"""
+
+
+testDevice1 = {"deviceInfo": samsung_S5880_2_3_4,
+									 "schema": smsSchema1}
+
+testDevice2 = {"deviceInfo": samsung_S5880_2_3_4,
+									 "schema": smsSchema2}
+
+testDevice3 = {"deviceInfo": samsung_S5880_2_3_4,
+									 "schema": smsSchema3}
+
+testDevice4 = {"deviceInfo": samsung_S5880_2_3_4,
+									 "schema": smsSchema4}
+
+testDevice5 = {"deviceInfo": samsung_S5880_2_3_4,
+									 "schema": smsSchema5}
+
+testDevice6 = {"deviceInfo": samsung_S5880_2_3_4,
+									 "schema": smsSchema6}
+
+testDevice7 = {"deviceInfo": samsung_S5880_2_3_4,
+									 "schema": smsSchema7}
+
+testDevice8 = {"deviceInfo": samsung_S5880_2_3_4,
+									 "schema": smsSchema8}
+
+testDevice9 = {"deviceInfo": samsung_S5880_2_3_4,
+									 "schema": smsSchema9}
+
+
 
 sms_update_thread_on_insert = '''CREATE TRIGGER sms_update_thread_on_insert
 AFTER INSERT ON sms BEGIN  UPDATE threads
@@ -159,5 +192,4 @@ WHEN 0 THEN 1      ELSE 0    END
 WHERE threads._id = new.thread_id; END;'''
 
 
-testDeviceInfo9 = {"deviceInfo": samsung_S5880_2_3_4,
-									 "schema": smsSchema9}
+
