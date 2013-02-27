@@ -1,0 +1,113 @@
+
+一、重要字段
+name
+常见格式：
+package_id null
+mimetype_id = 6
+raw_contact_id 对应 raw_contacts 中的 _id
+is_primary, is_super_primary, data_version 保持默认值 0
+data_version: 无符号整数，常见 0,1,2,...
+data 1 :主要数据：名称
+data 2: First Name | 名字
+data 3: Last Name  | 姓氏
+data 4: 前缀
+data 5: 中间名
+data 6: 后缀
+data 7: 名字拼音
+data 8: 中间名拼音
+data 9: 姓氏拼音
+data 10: 整型值, 1,?
+data 11: 整型值, 0,3,?
+data 12 - 14 为 null
+data 15 = data 1，
+data_sync1 - data_sync4 为 null，同步用的数据，不在数据恢复搜索范围内，
+	但这里的值是否会造成其他影响？
+
+phone
+Android 2.3.4
+data 1: 电话号码，例如 10086
+data 2: 电话类型，例如 2 为住宅
+				1: 住宅, 2: 手机, 3: 单位, 4: 单位传真, 5: 住宅传真
+				6: 寻呼机, 7: 其他, 8: 回拨号码, 0: 自定义
+data 3: null or 自定义类型名称
+data 4: 电话好吗的反字符串，例如 68001
+				4.1: 加了前缀的电话好吗，例如 +8610086
+data 5 - 15: null
+data_sync1 - data_sync4: null
+
+email
+Android 2.3.4
+data 1: Email地址，例如: a@b.com
+data 2: Email类型: 1,2,3,4,0
+				1: 住宅, 2: 单位, 3: 其他, 4: 手机, 0: 自定义
+data 3: 自定义类型的名称
+data 4 - 15: null
+data_sync1 - data_sync3: null
+data_sync4: null or 整数值，例如:10,11,12,13,14,....
+
+2.x
+data 1: Email地址，例如: a@b.com
+data 2: Email类型: 0,1,2,3,?
+data 3: 字符传值: Work Email, Other Email, Internet, <null>
+
+address
+data 1: 完整地址
+data 2: 地址类型，整型值: 1,2,3,0,...
+				1: ,2: ,3: ,0: 自定义类型
+data 3: 类型的名称，一般时自定义类型的名称
+				内置类型多数显示为 null
+data 4: 街道
+data 5: null or ?
+data 6: null or ?
+data 7: 城市
+data 8: 省
+data 9: 邮编
+data 10 - n: null
+可能的地址字段：街道、路、区、邮编、州、国家 等
+
+events
+2.x 有些没有？
+data 1: 格式化的日期格式，如 2013-01-27
+data 2: 类型值
+				1: 生日, 3: 纪念日
+data 3 - 15: null
+data_sync1 - data_sync4: null
+
+group
+data 1: group _id: 整型值，对应group表的_id
+data 2: null
+data 3: 组名称，如 家人、朋友
+
+删除的group能否对应？
+多个组会有多条 data 记录
+
+
+二、一般字段
+
+organization
+data 1: 主要数据, 公司名称
+data 2: 类型值
+				1: 公司, 2: 其他, 0: 定义
+data 3: 自定义公司类型名称
+data 4: 职位名称
+
+im
+data 1: 主要数据，IM
+data 2: ?, 数值为 3
+data 3: null
+data 4: null
+data 5: 类型值
+				0: AIM, 1: Windows Live, 2: Yahoo, 3: skype, 4: QQ, 5: Google talk
+				6: ICQ, 7: Jabber, -1: 自定义类型
+data 6: 自定义类型名称
+data 7 -15: null
+
+notes
+
+nickname
+
+website
+
+internetcall
+
+relationship
