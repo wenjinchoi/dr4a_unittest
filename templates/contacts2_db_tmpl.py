@@ -35,6 +35,7 @@ data8 TEXT,data9 TEXT,data10 TEXT,data11 TEXT,data12 TEXT,data13 TEXT,
 data14 TEXT,data15 TEXT,
 data_sync1 TEXT, data_sync2 TEXT, data_sync3 TEXT, data_sync4 TEXT );"""
 
+
 data_1_ori = """CREATE TABLE data
 (_id INTEGER PRIMARY KEY AUTOINCREMENT,
 package_id INTEGER REFERENCES package(_id),

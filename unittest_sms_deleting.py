@@ -5,7 +5,7 @@ import os
 import unittest
 
 from sqlite_utils import *
-from loadFunction import parsingMmssmsByLoadLibrary
+from loadFunction import parsingByLoadLibrary, SCAN_TYPE_MMSSMS
 from templates import mmssms_db_tmpl
 
 faked = True
@@ -60,9 +60,10 @@ class SMSTestCase(unittest.TestCase):
 	def parsing_db(self, intput_db_file, output_db_file):
 		""" 此处为实际调用程序功能的函数，若被测程序接口有变，则通过改动此函数来实现
 		"""
-		parsingMmssmsByLoadLibrary(self.deviceInfo,
-												 			 self.tmpdb_path,
-												 			 self.output_db_filepath)
+		parsingByLoadLibrary(self.deviceInfo,
+												 SCAN_TYPE_MMSSMS,
+									 			 self.tmpdb_path,
+									 			 self.output_db_filepath)
 
 	def insertAndDeleteLeftTheFirstOne(self, db_file, testData):
 		""" Use for fill the database |db_file| with |testData|,

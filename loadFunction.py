@@ -6,6 +6,8 @@ from multiprocessing import Process
 
 from ctypes import *
 
+SCAN_TYPE_CONTACTS = c_int(0)
+SCAN_TYPE_MMSSMS   = c_int(1)
 
 class DeviceInfo(Structure):
     _fields_ = [("manufacturer", c_wchar_p),
@@ -39,7 +41,7 @@ def dlclose(handle):
    libdl = ctypes.CDLL("libdl.so")
    libdl.dlclose(handle)
 
-def scan_mmssms_db(deviceInfo, src_path, rec_path):
+def scan_db(deviceInfo, scan_type, src_path, rec_path):
 	assert(os.path.exists("WSDBRecovery.dll"))
 	assert(os.path.exists("WSConfigerDB.db"))
 
@@ -57,10 +59,9 @@ def scan_mmssms_db(deviceInfo, src_path, rec_path):
 	# Scan and Output
 	pwszDBPath = c_wchar_p(src_path)
 	pwszSaveDBPath = c_wchar_p(rec_path)
-	scanType = c_int(1)
 	pFunc = c_void_p(0)
 
-	if (libdr.WSDBScan(pwszDBPath, pwszSaveDBPath , scanType, pFunc) != 0):
+	if (libdr.WSDBScan(pwszDBPath, pwszSaveDBPath , scan_type, pFunc) != 0):
 		return False
 
 	libdr.WSDBRecoveryUnInit()
@@ -70,12 +71,12 @@ def scan_mmssms_db(deviceInfo, src_path, rec_path):
 	return True
 
 # Using multiprocessing
-def parsingMmssmsByLoadLibrary(deviceInfo, input_db_path, output_db_file):
+def parsingByLoadLibrary(deviceInfo, scan_type, input_db_path, output_db_file):
 	src_db_path = os.path.split(os.path.abspath(input_db_path))[0]
 	rec_db_path = os.path.split(os.path.abspath(output_db_file))[0]
 	# 使用 multiprocessing.Process 加载，主要避免调用动态库后，被解析的数据库文件无法删除
 	# 注意：若使用 threading 会导致访问内存的异常
-	p = Process(target=scan_mmssms_db,
-							args=(deviceInfo, src_db_path, rec_db_path))
+	p = Process(target=scan_db,
+							args=(deviceInfo, scan_type, src_db_path, rec_db_path))
 	p.start()
 	p.join()
