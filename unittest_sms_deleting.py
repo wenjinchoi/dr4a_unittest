@@ -6,7 +6,7 @@ import unittest
 
 from sqlite_utils import *
 from loadFunction import parsingByLoadLibrary, SCAN_TYPE_MMSSMS
-from templates import mmssms_db_tmpl
+from templates import testDeviceOfMmssms
 
 faked = True
 
@@ -26,7 +26,7 @@ class SMSTestCase(unittest.TestCase):
 		在继承类中，需要覆盖此方法以构建针对不同测试设备的 TestCase
 		建议直接调用 initWithDeviceAndSchema 初始化方法
 		"""
-		self.initWithDeviceAndSchema(mmssms_db_tmpl.testDevice9)
+		self.initWithDeviceAndSchema(testDeviceOfMmssms.testDevice9)
 
 	def tearDown(self):
 		pass
@@ -39,7 +39,7 @@ class SMSTestCase(unittest.TestCase):
 				头文件，在 loadFunction.py 中实现了替换类 |class DeviceInfo|, 需通过构建该类
 				的对象作为此处的参数
 				schema 是用于创建Table的 schema, sms 的测试至少包含 sms 和 threads Table，
-				定义在 mmssms_db_tmpl
+				定义在 testDeviceOfMmssms
 		"""
 		self.faked = False
 
@@ -561,57 +561,54 @@ class SMSTestCase(unittest.TestCase):
 
 	# Scenario simulation
 	def testRandomDelete(self):
-		""" 插入一批数据，随机删除其中的若干条
-		"""
+		# 插入一批数据，随机删除其中的若干条
+
 		pass
 
 	def testDeleteAllReordOfAThreadID(self):
-		""" 删除同一 thread_id 的记录，即删除整个对话
-		"""
+		# 删除同一 thread_id 的记录，即删除整个对话
 		pass
 
 	def testDeleteAllReordOfSeveralThreadID(self):
-		""" 删除若干各 thread_id 的记录，即删除若干个个对话
-		"""
+		# 删除若干各 thread_id 的记录，即删除若干个个对话
 		pass
 
 	def testDeleteRecordsGreaterThanAPage(self):
-		""" 删除一批记录，该批记录的长度大于一个PageSize的大小，使得 Sqlite 发生自收缩
-		（该db文件需开启 auto_vacuum ）
-		"""
+		# 删除一批记录，该批记录的长度大于一个PageSize的大小，使得 Sqlite 发生自收缩
+		#（该db文件需开启 auto_vacuum ）
 		pass
 
 class HTC_G10_TestCase(SMSTestCase):
 	def setUp(self):
-		self.initWithDeviceAndSchema(mmssms_db_tmpl.testDevice2)
+		self.initWithDeviceAndSchema(testDeviceOfMmssms.testDevice2)
 
 class HTC_G12_TestCase(SMSTestCase):
 	def setUp(self):
-		self.initWithDeviceAndSchema(mmssms_db_tmpl.testDevice3)
+		self.initWithDeviceAndSchema(testDeviceOfMmssms.testDevice3)
 
 class Samsung_S5830__TestCase(SMSTestCase):
 	def setUp(self):
-		self.initWithDeviceAndSchema(mmssms_db_tmpl.testDevice4)
+		self.initWithDeviceAndSchema(testDeviceOfMmssms.testDevice4)
 
 class Motorola_XT883_TestCase(SMSTestCase):
 	def setUp(self):
-		self.initWithDeviceAndSchema(mmssms_db_tmpl.testDevice5)
+		self.initWithDeviceAndSchema(testDeviceOfMmssms.testDevice5)
 
 class MMotorola_ME722_TestCase(SMSTestCase):
 	def setUp(self):
-		self.initWithDeviceAndSchema(mmssms_db_tmpl.testDevice6)
+		self.initWithDeviceAndSchema(testDeviceOfMmssms.testDevice6)
 
 class LG_P990_TestCase(SMSTestCase):
 	def setUp(self):
-		self.initWithDeviceAndSchema(mmssms_db_tmpl.testDevice7)
+		self.initWithDeviceAndSchema(testDeviceOfMmssms.testDevice7)
 
 class Samsung_Note_GT_I9220_TestCase(SMSTestCase):
 	def setUp(self):
-		self.initWithDeviceAndSchema(mmssms_db_tmpl.testDevice8)
+		self.initWithDeviceAndSchema(testDeviceOfMmssms.testDevice8)
 
 class Samsung_Samsung_S5880_TestCase(SMSTestCase):
 	def setUp(self):
-		self.initWithDeviceAndSchema(mmssms_db_tmpl.testDevice9)
+		self.initWithDeviceAndSchema(testDeviceOfMmssms.testDevice9)
 
 if __name__ == '__main__':
 	unittest.main()

@@ -41,7 +41,7 @@ def dlclose(handle):
    libdl = ctypes.CDLL("libdl.so")
    libdl.dlclose(handle)
 
-def scan_db(deviceInfo, scan_type, src_path, rec_path):
+def scan_db(tDeviceInfo, scan_type, src_path, rec_path):
 	assert(os.path.exists("WSDBRecovery.dll"))
 	assert(os.path.exists("WSConfigerDB.db"))
 
@@ -50,10 +50,15 @@ def scan_db(deviceInfo, scan_type, src_path, rec_path):
 
 	# Init WSDBRecovery
 	pConfigFile = c_wchar_p('WSConfigerDB.db')
+
+	deviceInfo = DeviceInfo(c_wchar_p(tDeviceInfo[0]),
+	                 		    c_wchar_p(tDeviceInfo[1]),
+	                      	c_wchar_p(tDeviceInfo[2]))
 	pDeviceInfo = addressof(deviceInfo)
 
 	libdr = cdll.LoadLibrary("WSDBRecovery.dll")
 	if (libdr.WSDBRecoveryInit(pConfigFile, pDeviceInfo) != 0):
+		print "WSDBRecoveryInit fail."
 		return False
 
 	# Scan and Output
@@ -61,8 +66,8 @@ def scan_db(deviceInfo, scan_type, src_path, rec_path):
 	pwszSaveDBPath = c_wchar_p(rec_path)
 	pFunc = c_void_p(0)
 
-	if (libdr.WSDBScan(pwszDBPath, pwszSaveDBPath , scan_type, pFunc) != 0):
-		return False
+	ret = libdr.WSDBScan(pwszDBPath, pwszSaveDBPath , scan_type, pFunc)
+	assert(ret == 0)
 
 	libdr.WSDBRecoveryUnInit()
 
@@ -71,12 +76,27 @@ def scan_db(deviceInfo, scan_type, src_path, rec_path):
 	return True
 
 # Using multiprocessing
-def parsingByLoadLibrary(deviceInfo, scan_type, input_db_path, output_db_file):
+def parsingByLoadLibrary(tDeviceInfo, scan_type, input_db_path, output_db_file):
 	src_db_path = os.path.split(os.path.abspath(input_db_path))[0]
 	rec_db_path = os.path.split(os.path.abspath(output_db_file))[0]
+
 	# 使用 multiprocessing.Process 加载，主要避免调用动态库后，被解析的数据库文件无法删除
 	# 注意：若使用 threading 会导致访问内存的异常
+	# Process 的 args 不能传 class DeviceInfo 类型，这里传的时元组
+	# 在 scan_db 内转换为 class DeviceInfo 类型
 	p = Process(target=scan_db,
-							args=(deviceInfo, scan_type, src_db_path, rec_db_path))
+							args=(tDeviceInfo, scan_type, src_db_path, rec_db_path))
 	p.start()
 	p.join()
+
+
+if __name__ == '__main__':
+	tDeviceInfo = ('sansung', 's5880', '2.3.4' )
+	print parsingByLoadLibrary(tDeviceInfo,
+														 SCAN_TYPE_CONTACTS,
+	 						 							 "./src_db/contacts2.db",
+	 						 							 "./rec_db/contacts2.db")
+
+
+
+
