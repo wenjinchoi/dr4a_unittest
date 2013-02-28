@@ -155,4 +155,54 @@ WHEN 0 THEN 1      ELSE 0    END
 WHERE threads._id = new.thread_id; END;'''
 
 
+samsung_gts5570_2_2_1_sms = """CREATE TABLE sms (
+_id INTEGER PRIMARY KEY AUTOINCREMENT,thread_id INTEGER,address TEXT,
+person INTEGER,date INTEGER,protocol INTEGER,read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,type INTEGER,reply_path_present INTEGER,
+subject TEXT,body TEXT,service_center TEXT,locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0);"""
+
+samsung_gti9000_2_3_4_sms = """CREATE TABLE sms (
+_id INTEGER PRIMARY KEY AUTOINCREMENT,thread_id INTEGER,address TEXT,
+person INTEGER,date INTEGER,protocol INTEGER,read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,type INTEGER,reply_path_present INTEGER,
+subject TEXT,body TEXT,service_center TEXT,locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0);"""
+
+samsung_gtn7000_4_0_4_sms = """CREATE TABLE sms (
+_id INTEGER PRIMARY KEY AUTOINCREMENT,thread_id INTEGER,address TEXT,
+person INTEGER,date INTEGER,date_sent INTEGER DEFAULT 0,protocol INTEGER,
+read INTEGER DEFAULT 0,status INTEGER DEFAULT -1,type INTEGER,
+reply_path_present INTEGER,subject TEXT,body TEXT,service_center TEXT,
+locked INTEGER DEFAULT 0,error_code INTEGER DEFAULT 0,seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0,hidden INTEGER DEFAULT 0,group_id INTEGER,
+group_type INTEGER,delivery_date INTEGER, reserved INTEGER DEFAULT 0,
+pri INTEGER DEFAULT 0);"""
+
+samsung_sghi997_2_2_1_sms = """CREATE TABLE sms (
+_id INTEGER PRIMARY KEY AUTOINCREMENT,thread_id INTEGER,address TEXT,
+person INTEGER,date INTEGER,protocol INTEGER,read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,type INTEGER,reply_path_present INTEGER,
+subject TEXT,body TEXT,service_center TEXT,locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0);"""
+
+samsung_gts5830_2_3_4_sms = """CREATE TABLE sms (
+_id INTEGER PRIMARY KEY AUTOINCREMENT,thread_id INTEGER,address TEXT,
+person INTEGER,date INTEGER,protocol INTEGER,read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,type INTEGER,reply_path_present INTEGER,
+subject TEXT,body TEXT,service_center TEXT,locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0,delivery_date INTEGER);"""
+
+samsung_gts5670_2_2_1_sms = """CREATE TABLE sms (
+_id INTEGER PRIMARY KEY AUTOINCREMENT,thread_id INTEGER,address TEXT,
+person INTEGER,date INTEGER,protocol INTEGER,read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,type INTEGER,reply_path_present INTEGER,
+subject TEXT,body TEXT,service_center TEXT,locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0);"""
+
 

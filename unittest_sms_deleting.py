@@ -26,7 +26,7 @@ class SMSTestCase(unittest.TestCase):
 		在继承类中，需要覆盖此方法以构建针对不同测试设备的 TestCase
 		建议直接调用 initWithDeviceAndSchema 初始化方法
 		"""
-		self.initWithDeviceAndSchema(testDeviceOfMmssms.testDevice9)
+		self.initWithDeviceAndSchema(testDeviceOfMmssms.testDevice1)
 
 	def tearDown(self):
 		pass
@@ -578,37 +578,26 @@ class SMSTestCase(unittest.TestCase):
 		#（该db文件需开启 auto_vacuum ）
 		pass
 
-class HTC_G10_TestCase(SMSTestCase):
+
+class Samsung_gti9000_2_3_4_TestCase(SMSTestCase):
 	def setUp(self):
 		self.initWithDeviceAndSchema(testDeviceOfMmssms.testDevice2)
 
-class HTC_G12_TestCase(SMSTestCase):
+class Samsung_gtn7000_4_0_4_TestCase(SMSTestCase):
 	def setUp(self):
 		self.initWithDeviceAndSchema(testDeviceOfMmssms.testDevice3)
 
-class Samsung_S5830__TestCase(SMSTestCase):
+class Samsung_sghi997_2_2_1_TestCase(SMSTestCase):
 	def setUp(self):
 		self.initWithDeviceAndSchema(testDeviceOfMmssms.testDevice4)
 
-class Motorola_XT883_TestCase(SMSTestCase):
+class Samsung_gts5830_2_3_4_TestCase(SMSTestCase):
 	def setUp(self):
 		self.initWithDeviceAndSchema(testDeviceOfMmssms.testDevice5)
 
-class MMotorola_ME722_TestCase(SMSTestCase):
+class Samsung_gts5670_2_2_1_TestCase(SMSTestCase):
 	def setUp(self):
 		self.initWithDeviceAndSchema(testDeviceOfMmssms.testDevice6)
-
-class LG_P990_TestCase(SMSTestCase):
-	def setUp(self):
-		self.initWithDeviceAndSchema(testDeviceOfMmssms.testDevice7)
-
-class Samsung_Note_GT_I9220_TestCase(SMSTestCase):
-	def setUp(self):
-		self.initWithDeviceAndSchema(testDeviceOfMmssms.testDevice8)
-
-class Samsung_Samsung_S5880_TestCase(SMSTestCase):
-	def setUp(self):
-		self.initWithDeviceAndSchema(testDeviceOfMmssms.testDevice9)
 
 if __name__ == '__main__':
 	unittest.main()
