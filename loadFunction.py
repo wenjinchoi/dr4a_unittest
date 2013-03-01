@@ -90,13 +90,53 @@ def parsingByLoadLibrary(tDeviceInfo, scan_type, input_db_path, output_db_file):
 	p.join()
 
 
+class Scaner():
+	def __init__(self, DeviceInfoTuple, scan_type, input_db_path, output_db_file):
+		self.pConfigFile = c_wchar_p('WSConfigerDB.db')
+		self.pDeviceInfo = self._convertDeviceInfo(DeviceInfoTuple)
+
+		self.scan_type = scan_type
+		self.input_db_path = os.path.split(os.path.abspath(input_db_path))[0]
+		self.output_db_file = os.path.split(os.path.abspath(output_db_file))[0]
+
+		self.pFunc = c_void_p(0)
+		self.saved_stdout = sys.stdout
+
+		libscaner = cdll.LoadLibrary("WSDBRecovery.dll")
+
+		redirect_stdout()
+		libscaner.WSDBRecoveryInit(pConfigFile, pDeviceInfo)
+
+	def _convertDeviceInfo(self, DeviceInfoTuple):
+		deviceInfo = DeviceInfo(c_wchar_p(tDeviceInfo[0]),
+           		    				  c_wchar_p(tDeviceInfo[1]),
+                					  c_wchar_p(tDeviceInfo[2]))
+		return addressof(deviceInfo)
+
+	def _scan(self):
+		libscaner.WSDBScan(self.input_db_path,
+											 self.output_db_file,
+											 self.scan_type,
+											 self.pFunc)
+
+	def set_scan_type(self, scan_type):
+		self.scan_type = scan_type
+
+	def start(self):
+		p = Process(target = self._scan)
+		p.start()
+		p.join()
+
+	def __del__(self):
+		libscaner.WSDBRecoveryUnInit()
+		sys.stdout = self.saved_stdout
+
+
 if __name__ == '__main__':
 	tDeviceInfo = ('sansung', 's5880', '2.3.4' )
-	print parsingByLoadLibrary(tDeviceInfo,
-														 SCAN_TYPE_CONTACTS,
-	 						 							 "./src_db/contacts2.db",
-	 						 							 "./rec_db/contacts2.db")
-
-
-
-
+	scaner = Scaner(tDeviceInfo,
+									SCAN_TYPE_CONTACTSm,
+									"./src_path/contacts2.db",
+									"./rec_path/contacts.db")
+	scaner.set_scan_type(SCAN_TYPE_MMSSMS)
+	scaner.start()
