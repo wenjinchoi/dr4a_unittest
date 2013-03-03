@@ -1,6 +1,7 @@
 
 一、重要字段
 photo
+data 15: 头像缩略图的blob
 
 name
 常见格式：
@@ -123,3 +124,20 @@ data 1: 主要数据, Internet Call
 data 2-15: null
 
 relationship
+
+
+三、删除场景
+
+1) 删除整个联系人
+2) 删除联系人中的某条数据
+3) 在应用程序中，清空联系人存储数据
+4) wipe user data
+5) 恢复出厂设置
+6) 第三方程序删除
+
+1) set raw_contacts::deleted = 1
+2) DELETE FROM data
+3) reset Database
+4) reset Database, and wipe partition?
+5) reset Database, and ?
+6)
