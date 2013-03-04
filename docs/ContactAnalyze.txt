@@ -1,5 +1,19 @@
 
 一、重要字段
+
+mimetypes
+1  email
+2  im
+3  address
+4  photo
+5  phone
+6  name
+7  organization
+8  nickname
+9  group
+10 note
+11 website
+
 photo
 data 15: 头像缩略图的blob
 

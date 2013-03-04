@@ -74,7 +74,7 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 
 	def fetchallDefault(self, db_file):
 		sql = "SELECT " + default_cols + " FROM data"
-		self.fetchallWithSQL(db_file, sql)
+		return self.fetchallWithSQL(db_file, sql)
 
 	def checkResultWithTestDataNum(self, testData, num):
 		results = self.fetchallDefault(self.output_db_file)
@@ -120,22 +120,84 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 
 		self.assertIn(testData[deleteRecordID-1], results)
 
+	@unittest.skip("Not support Empty Text")
+	def testEmptyText(self):
+		testData = (
+			(6, 1, "something", None, ""),
+			(6, 2, "Name", "Empty Text at right ->", ""))
+			# Could find empty text | "" |, not null value
+
+		self.insertNormalTestData(testData)
+		self.backupDatabaseBeforDeleting()
+		self.deleteRecordWithID(2)
+		self.parsingDataTableByLoadLibrary()
+		results = self.fetchallDefault(self.output_db_file)
+		self.assertIn(testData[1], results)
+
 	def testDeleteSomeRecordOfOneContact(self):
-		self.fail()
+		testData = (
+			(6, 1, "something", "", ""),
+			(6, 2, "First Last", "First", "Last"),
+			(10, 3, "not important", "", ""),
+			(5, 2, "1234567", "1", None), # phone 1, _id: 4
+			(1, 2, "test@email.com", "1", None), # email, nearby, _id: 5
+			(11, 4, "1", "2", "3"),
+			(9, 2, "3", None, "Family"), # group, _id: 7
+			(12, 5, "111", "222", "333"),
+			(5, 2, "800888999", "2", None),  # phone 2, _id: 8
+			(11, 5, "http://abc.com", "", ""),
+			(7, 2, "Wondershare", "1", "Saodiseng"))  # organization, _id: 10
+
+		self.insertNormalTestData(testData)
+		self.backupDatabaseBeforDeleting()
+		self.deleteRecordWithID(7)  # group
+		self.deleteRecordWithID(8)  # phone 2
+		self.parsingDataTableByLoadLibrary()
+		results = self.fetchallDefault(self.output_db_file)
+		for n in xrange(len(testData)):
+			if testData[n][1] == 2:
+				self.assertIn(testData[n], results)
 
 	def testDeleteSomeRecordOfSomeContacts(self):
-		self.fail()
+		testData = (
+			(6, 1, "begining", "", ""),
+			(6, 2, "First Last", "First", "Last"),   # person 1, name
+			(10, 257, "not important", "a", "b"),
+			(5, 2, "1234567", "1", None),            # person 1, phone 1
+			(1, 2, "test@email.com", "1", None),     # person 1, email
+			(6, 3, "Person 2", "Person", "2"),       # person 2, name
+			(11, 4, "1", "2", "3"),
+			(9, 2, "3", None, "Family"),             # person 1, group
+			(5, 3, "2223333", "1", None),            # person 2, phone
+			(5, 2, "800888999", "2", None),          # person 1, phone 2
+			(6, 5, "Bob Hill", "Bob", "Hill"),
+			(11, 3, "http://abc.com", "7", None),    # person 2, website
+			(7, 2, "Wondershare", "1", "Saodiseng")) # person 1, organization
+
+		self.insertNormalTestData(testData)
+		self.backupDatabaseBeforDeleting()
+		deleteSQL = "DELETE FROM data WHERE raw_contact_id = 2" \
+		 						" OR raw_contact_id = 3"
+		self.deleteRecordWithSQL(deleteSQL)
+		self.parsingDataTableByLoadLibrary()
+		results = self.fetchallDefault(self.output_db_file)
+		for n in xrange(len(testData)):
+			if testData[n][1] == 2 or testData[n][1] == 3:
+				self.assertIn(testData[n], results)
 
 	def testDeleteAllRecordOfOneContact(self):
 		testData = (
 			(6, 1, "something", "", ""),
 			(6, 2, "First Last", "First", "Last"),
-			(5, 3, "not important", "", ""),
-			(0, 2, "1234567", "2", None), # phone
-			(0, 2, "test@email.com", "1", None), # email, nearby
-			(1, 4, "1", "2", "3"),
-			(0, 2, "3", None, "Family"), # group
-			(12, 5, "111", "222", "333"))
+			(10, 3, "not important", "", ""),
+			(5, 2, "1234567", "1", None), # phone 1, _id: 4
+			(1, 2, "test@email.com", "1", None), # email, nearby, _id: 5
+			(11, 4, "1", "2", "3"),
+			(9, 2, "3", None, "Family"), # group, _id: 7
+			(12, 5, "111", "222", "333"),
+			(5, 2, "800888999", "2", None),  # phone 2, _id: 8
+			(11, 5, "http://abc.com", "", ""),
+			(7, 2, "Wondershare", "1", "Saodiseng"))  # organization, _id: 10
 
 		self.insertNormalTestData(testData)
 		self.backupDatabaseBeforDeleting()
@@ -143,12 +205,34 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 		self.deleteRecordWithSQL(deleteSQL)
 		self.parsingDataTableByLoadLibrary()
 		results = self.fetchallDefault(self.output_db_file)
-		for n in xrange(testData):
+		for n in xrange(len(testData)):
 			if testData[n][1] == 2:
 				self.assertIn(testData[n], results)
 
 	def testDeleteAllRecordOfContacts(self):
-		self.fail()
+		testData = (
+			(6, 1, "begining", "begining", None),
+			(6, 2, "First Last", "First", "Last"),   # person 1, name
+			(10, 257, "not important", "a", "b"),
+			(5, 2, "1234567", "1", None),            # person 1, phone 1
+			(1, 2, "test@email.com", "1", None),     # person 1, email
+			(6, 3, "Person 2", "Person", "2"),       # person 2, name
+			(11, 4, "1", "2", "3"),
+			(9, 2, "3", None, "Family"),             # person 1, group
+			(5, 3, "2223333", "1", None),            # person 2, phone
+			(5, 2, "800888999", "2", None),          # person 1, phone 2
+			(6, 5, "Bob Hill", "Bob", "Hill"),
+			(11, 3, "http://abc.com", "7", None),    # person 2, website
+			(7, 2, "Wondershare", "1", "Saodiseng")) # person 1, organization
+
+		self.insertNormalTestData(testData)
+		self.backupDatabaseBeforDeleting()
+		deleteSQL = "DELETE FROM data"
+		self.deleteRecordWithSQL(deleteSQL)
+		self.parsingDataTableByLoadLibrary()
+		results = self.fetchallDefault(self.output_db_file)
+		for n in xrange(len(testData)):
+			self.assertIn(testData[n], results)
 
 	def testNameDel5ContinousRecord(self):
 		"""Delete the records which id is  2,3,4,5,6"""
@@ -197,9 +281,10 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 	def tmplWithRandomString(self, data_length):
 		testData = []
 		for i in xrange(data_length):
-			testData.append((random.randint(1,15),
-											 random.randint(1, 1000),
+			testData.append((random.randint(1, 15),
+											 random.randint(1, 100),
 											 randStr(), randStr(), randStr()))
+		testData = tuple(testData)
 
 		self.insertNormalTestData(testData)
 		src_db_results = self.fetchallDefault(self.input_db_file)
@@ -214,15 +299,13 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 		# Find deleted records: 2,4,6,8,...
 		for n in xrange(2, len(testData), 2):
 			results = self.fetchallDefault(self.output_db_file)
-			self.assertTrue(testData[n] in results,
-				"Could not find the deleted Record _id: %d" % n)
+			self.assertIn(src_db_results[n], results)
 
 		# Find existed records: 1,3,5,7,...
 		for n in xrange(1, len(testData), 2):
 			results = self.fetchallDefault(self.output_db_file)
 			self.assertGreaterEqual(len(results), len(src_db_results))
-			self.assertTrue(testData[n] in results,
-				"Could not find the exists Record _id: %d" % n)
+			self.assertIn(src_db_results[n], results)
 
 	def testRandomLettersDigitsAndWhiteSpaceString10(self):
 		self.tmplWithRandomString(10)
@@ -238,8 +321,9 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 		testData = []
 		for i in xrange(data_length):
 			testData.append((random.randint(1,15),
-											 random.randint(1, 1000),
+											 random.randint(1, 100),
 											 randStr2(), randStr2(), randStr2()))
+		testData = tuple(testData)
 
 		self.insertNormalTestData(testData)
 		src_db_results = self.fetchallDefault(self.input_db_file)
@@ -254,15 +338,13 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 		# Find deleted records: 2,4,6,8,...
 		for n in xrange(2, len(testData), 2):
 			results = self.fetchallDefault(self.output_db_file)
-			self.assertTrue(testData[n] in results,
-				"Could not find the deleted Record _id: %d" % n)
+			self.assertIn(testData[n], results)
 
 		# Find existed records: 1,3,5,7,...
 		for n in xrange(1, len(testData), 2):
 			results = self.fetchallDefault(self.output_db_file)
 			self.assertGreaterEqual(len(results), len(src_db_results))
-			self.assertTrue(testData[n] in results,
-				"Could not find the exists Record _id: %d" % n)
+			self.assertTrue(testData[n], results)
 
 	def testRandomPrintableString10(self):
 		self.tmplWithRandomString2(10)

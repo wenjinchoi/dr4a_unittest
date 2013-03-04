@@ -7,20 +7,20 @@ def randomPrintableStr(randomlength=8):
 	random.shuffle(a)
 	return ''.join(a[:randomlength])
 
-def randomLettersStr(randomlength=8):
-	a = list(string.letters
-					+ string.digits
-					+ string.whitespace)
-	random.shuffle(a)
-	return ''.join(a[:randomlength])
-
 def randStr():
 	n = random.randint(1, 50)
 	return randomPrintableStr(n)
 
+
+def randomLettersStr(randomlength=8):
+	a = list(string.letters+string.digits+string.whitespace)
+	random.shuffle(a)
+	return ''.join(a[:randomlength])
+
 def randStr2():
 	n = random.randint(1, 50)
 	return randomLettersStr(n)
+
 
 def randUnicode():
 	return unichr(random.randint(0x4E00, 0x9FA5)).encode('utf-8', 'ignore')
@@ -33,4 +33,4 @@ def randUTF8(randomlength = 10):
 
 if __name__ == '__main__':
 	# print random_str(50)
-	print randUTF8(70)
+	print randStr2()
