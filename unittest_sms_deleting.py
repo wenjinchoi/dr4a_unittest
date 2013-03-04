@@ -138,7 +138,7 @@ class SMSTestCase(unittest.TestCase):
 			c.execute(insertSQL, testData[3])
 			conn.commit()
 
-		lastRecordSize = lastSmsRecordSize(self.tmpdb_path)
+		lastRecordSize = lastRecordSize(self.tmpdb_path)
 
 		self.parsing_db(self.tmpdb_path, self.output_db_filepath)
 		self.assertTrue(isTableExists(self.output_db_filepath, "sms"),
@@ -174,10 +174,10 @@ class SMSTestCase(unittest.TestCase):
 			c.execute('''delete from sms where _id = 2''')
 			c.execute(insertSQL, testData[3])
 			conn.commit()
-			record_size_4 = lastSmsRecordSize(self.tmpdb_path)
+			record_size_4 = lastRecordSize(self.tmpdb_path)
 			c.execute(insertSQL, testData[4])
 			conn.commit()
-			record_size_5 = lastSmsRecordSize(self.tmpdb_path)
+			record_size_5 = lastRecordSize(self.tmpdb_path)
 
 		self.parsing_db(self.tmpdb_path, self.output_db_filepath)
 		self.assertTrue(isTableExists(self.output_db_filepath, "sms"),

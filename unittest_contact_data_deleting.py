@@ -362,7 +362,76 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 		self.fail()
 
 	def testNameWithPhoto(self):
-		self.fail()
+		with open("./res/pic.jpg") as f:
+			data15 = buffer(f.read())
+
+		testData = (
+			(6, 1, "Tom Smith", "Tom", "Smith", None),
+			(4, 1, None, None, None, data15),
+			(5, 1, "123456", None, None, None))
+
+		insertSQL = "INSERT INTO data (%s,data15) " \
+			"VALUES(?,?,?,?,?,?)" % default_cols
+		self.insertTestDataWithSQL(insertSQL, testData)
+		self.backupDatabaseBeforDeleting()
+		self.deleteRecordWithID(2)
+		self.parsingDataTableByLoadLibrary()
+
+		fetchSQL = "SELECT %s,data15 FROM data" % default_cols
+		results = self.fetchallWithSQL(self.output_db_file, fetchSQL)
+
+		self.assertIn(testData[1], results)
+
+	def testOverwritedDeletedRecord(self):
+		testData1 = (
+			(6, 1, "begining", "", ""),
+			(10,1, 50 * "a", None, None),
+			(5, 2, "1234567", "1", None))
+
+		testData2 = ((5, 1, "123456", None, None),)
+
+		self.insertNormalTestData(testData1)
+		sqlpage = getFirstPage(self.input_db_file)
+		record2Size = recordSize(sqlpage, 2)
+
+		self.deleteRecordWithID(2)
+		self.insertNormalTestData(testData2)
+		self.backupDatabaseBeforDeleting()
+
+		self.parsingDataTableByLoadLibrary()
+
+		fetchSQL = "SELECT data1 FROM data WHERE _id = 2"
+		result = self.fetchallWithSQL(self.output_db_file, fetchSQL)
+		self.assertLess((50 - record2Size + 2) * "a", result[0])
+
+	def testOverwritedDeletedRecord2(self):
+		testData1 = (
+			(6, 1, "begining", "", ""),
+			(10,1, 100 * "a", None, None),
+			(5, 2, "1234567", "1", None))
+
+		testData2 = (
+			(5, 1, "123456", None, None),
+			(6, 2, "OneName", None, None))
+
+		self.insertNormalTestData(testData1)
+		sqlpage = getFirstPage(self.input_db_file)
+		# record2Size = recordSize(sqlpage, 2)
+
+		self.deleteRecordWithID(2)
+		self.insertNormalTestData((testData2[0],))
+		recordSize_1 = lastRecordSize(self.input_db_file)
+		self.insertNormalTestData((testData2[1],))
+		recordSize_2 = lastRecordSize(self.input_db_file)
+
+		self.backupDatabaseBeforDeleting()
+
+		self.parsingDataTableByLoadLibrary()
+
+		fetchSQL = "SELECT data1 FROM data WHERE _id = 2"
+		result = self.fetchallWithSQL(self.output_db_file, fetchSQL)
+		self.assertLess((100 - recordSize_1 - recordSize_2) * "a", result[0])
+
 
 if __name__ == '__main__':
 	unittest.main()

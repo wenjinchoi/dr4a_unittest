@@ -39,7 +39,7 @@ def pageHeader(sqlitePage):
 	return (ptype, first_free_block_offset, cells_count, cell_offset)
 
 # TODO: more smart...
-def SmsFirstPage(sqlite_file):
+def getFirstPage(sqlite_file):
 	buffer = []
 	with open(sqlite_file, 'rb') as f:
 		pagesize = getPageSize(sqlite_file)
@@ -60,8 +60,8 @@ def recordSize(sqlite_page, num):
 	offset = recordList(sqlite_page)[num]
 	return struct.unpack('>B', sqlite_page[offset:offset+1])[0] + 2
 
-def lastSmsRecordSize(sqlite_file):
-	sqlite_page = SmsFirstPage(sqlite_file)
+def lastRecordSize(sqlite_file):
+	sqlite_page = getFirstPage(sqlite_file)
 	return recordSize(sqlite_page, -1)
 
 # test
