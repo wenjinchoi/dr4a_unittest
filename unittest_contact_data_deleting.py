@@ -416,7 +416,6 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 
 		self.insertNormalTestData(testData1)
 		sqlpage = getFirstPage(self.input_db_file)
-		# record2Size = recordSize(sqlpage, 2)
 
 		self.deleteRecordWithID(2)
 		self.insertNormalTestData((testData2[0],))
@@ -431,6 +430,57 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 		fetchSQL = "SELECT data1 FROM data WHERE _id = 2"
 		result = self.fetchallWithSQL(self.output_db_file, fetchSQL)
 		self.assertLess((100 - recordSize_1 - recordSize_2) * "a", result[0])
+
+	def testInsert1200AndRandomDelete500(self):
+
+		photoTestData = []
+		with open("./res/pic.jpg") as f:
+			data15 = buffer(f.read())
+		for n in xrange(200):
+			photoTestData.append((6, random.randint(1,200),None, None, None, data15))
+
+		testData = []
+		for n in xrange(500):
+			# Name or Full data1 to data3
+			testData.append((random.randint(1,15),
+											 random.randint(1,200),
+											 randomLettersDigitsBlank(20),
+											 randomLettersDigitsBlank(10),
+											 randomLettersDigitsBlank(10), None))
+			# Phone or Full data1 to data3
+			testData.append((random.randint(1,15),
+											 random.randint(1,200),
+											 randDig(),
+											 str(random.randint(0,9)),
+											 None, None))
+
+		testData.extend(photoTestData)
+		random.shuffle(testData)
+		testData = tuple(testData)
+
+		insertSQL = "INSERT INTO data (%s,data15) " \
+			"VALUES(?,?,?,?,?,?)" % default_cols
+		self.insertTestDataWithSQL(insertSQL, testData)
+		self.backupDatabaseBeforDeleting()
+
+		id_list = [x for x in xrange(len(testData))]
+		random.shuffle(id_list)
+		for n in id_list[:500]:
+			self.deleteRecordWithID(id_list[n])
+
+		self.parsingDataTableByLoadLibrary()
+
+		fetchSQL = "SELECT %s,data15 FROM data" % default_cols
+		results = self.fetchallWithSQL(self.output_db_file, fetchSQL)
+
+		for n in xrange(len(testData)):
+			self.assertIn(testData[n], results)
+
+	def testDeleteAllWithAutoVacuum(self):
+		self.fail()
+
+	def testInsertAndDeleteSomeContactID(self):
+		self.fail()
 
 
 if __name__ == '__main__':

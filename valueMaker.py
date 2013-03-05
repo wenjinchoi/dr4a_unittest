@@ -18,9 +18,27 @@ def randomLettersStr(randomlength=8):
 	return ''.join(a[:randomlength])
 
 def randStr2():
-	n = random.randint(1, 50)
+	n = random.randint(1, 36)
 	return randomLettersStr(n)
 
+
+def randomLettersDigitsBlank(randomlength = 8):
+	a = list((string.letters+string.digits+5*" ")*5)
+	random.shuffle(a)
+	return ''.join(a[:randomlength])
+
+def randStr3():
+	n = random.randint(1, 140)
+	return randomLettersDigitsBlank(n)
+
+def randomDigits(randomlength = 8):
+	a = list(string.digits*5)
+	random.shuffle(a)
+	return ''.join(a[:randomlength])
+
+def randDig():
+	n = random.randint(1, 30)
+	return randomDigits(n)
 
 def randUnicode():
 	return unichr(random.randint(0x4E00, 0x9FA5)).encode('utf-8', 'ignore')
@@ -33,4 +51,7 @@ def randUTF8(randomlength = 10):
 
 if __name__ == '__main__':
 	# print random_str(50)
-	print randStr2()
+	print randStr3()
+	a = ()
+	a.append(1)
+	print a
