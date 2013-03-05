@@ -138,14 +138,14 @@ class SMSTestCase(unittest.TestCase):
 			c.execute(insertSQL, testData[3])
 			conn.commit()
 
-		lastRecordSize = lastRecordSize(self.tmpdb_path)
+		last_record_size = lastRecordSize(self.tmpdb_path)
 
 		self.parsing_db(self.tmpdb_path, self.output_db_filepath)
 		self.assertTrue(isTableExists(self.output_db_filepath, "sms"),
 			"the sms table does not exists in recovery file")
 		results = fetchSMSNormalData(self.output_db_filepath)
 
-		leave_times = 100 - lastRecordSize
+		leave_times = 100 - last_record_size
 		self.assertTrue(
 			('10086', 1, 112141782847, 5, leave_times * 'a') in results,
 			"could not find the correct deleted record")
