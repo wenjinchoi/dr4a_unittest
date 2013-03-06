@@ -90,7 +90,7 @@ def parsingByLoadLibrary(tDeviceInfo, scan_type, input_db_path, output_db_file):
 	p.join()
 
 
-class Scaner():
+class Scanner():
 	def __init__(self, DeviceInfoTuple, scan_type, input_db_path, output_db_file):
 		self.pConfigFile = c_wchar_p('WSConfigerDB.db')
 		self.pDeviceInfo = self._convertDeviceInfo(DeviceInfoTuple)
@@ -122,6 +122,12 @@ class Scaner():
 	def set_scan_type(self, scan_type):
 		self.scan_type = scan_type
 
+	def set_scan_type_contacts(self):
+		self.set_scan_type(SCAN_TYPE_CONTACTS)
+
+	def set_scan_type_mmssms(self):
+		self.set_scan_type(SCAN_TYPE_MMSSMS)
+
 	def start(self):
 		p = Process(target = self._scan)
 		p.start()
@@ -135,7 +141,7 @@ class Scaner():
 if __name__ == '__main__':
 	tDeviceInfo = ('sansung', 's5880', '2.3.4' )
 	scaner = Scaner(tDeviceInfo,
-									SCAN_TYPE_CONTACTSm,
+									SCAN_TYPE_CONTACTS,
 									"./src_path/contacts2.db",
 									"./rec_path/contacts.db")
 	scaner.set_scan_type(SCAN_TYPE_MMSSMS)

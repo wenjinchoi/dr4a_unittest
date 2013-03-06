@@ -6,7 +6,7 @@ import shutil
 import sqlite3
 import unittest
 
-from loadFunction import parsingByLoadLibrary, SCAN_TYPE_CONTACTS
+from loadFunction import parsingByLoadLibrary, SCAN_TYPE_CONTACTS, Scanner
 from templates import testDeviceOfContacts
 from templates.contacts_table_columns import *
 from sqlite_utils import *
@@ -64,6 +64,15 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 												 SCAN_TYPE_CONTACTS,
 												 self.input_db_file,
 												 self.output_db_file)
+
+		# TEST IT
+		# Use Scanner Class. I want only import Interface |Scanner|
+		if False:
+			scanner = Scanner(self.deviceInfo,
+												self.input_db_file,
+												self.output_db_file)
+			scanner.set_scan_type_contacts()
+			scanner.start()
 
 	def fetchallWithSQL(self, db_file, sql):
 		with sqlite3.connect(db_file) as conn:
@@ -234,6 +243,7 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 		for n in xrange(len(testData)):
 			self.assertIn(testData[n], results)
 
+	# 删除5条连续的记录
 	def testNameDel5ContinousRecord(self):
 		"""Delete the records which id is  2,3,4,5,6"""
 		testData = (
@@ -257,6 +267,7 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 		for n in xrange(2, len(testData)+1):
 			self.checkResultWithTestDataNum(testData, n-1)
 
+	# 间断地删除记录
 	def testNameDelIntermittently(self):
 		"""Delete the records which id is  2,4,6"""
 		testData = (
@@ -283,7 +294,7 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 		for i in xrange(data_length):
 			testData.append((random.randint(1, 15),
 											 random.randint(1, 100),
-											 randStr(), randStr(), randStr()))
+											 randStr3(), randStr3(), randStr3()))
 		testData = tuple(testData)
 
 		self.insertNormalTestData(testData)
@@ -382,9 +393,9 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 
 		self.assertIn(testData[1], results)
 
-	def testOverwritedDeletedRecord(self):
+	def testDeleteOneRecordAndInsertOneRecord(self):
 		testData1 = (
-			(6, 1, "begining", "", ""),
+			(6, 1, "begining", "bein", "ing"),
 			(10,1, 50 * "a", None, None),
 			(5, 2, "1234567", "1", None))
 
@@ -392,7 +403,7 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 
 		self.insertNormalTestData(testData1)
 		sqlpage = getFirstPage(self.input_db_file)
-		record2Size = recordSize(sqlpage, 2)
+		record2_size = recordSize(sqlpage, 2)
 
 		self.deleteRecordWithID(2)
 		self.insertNormalTestData(testData2)
@@ -402,11 +413,15 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 
 		fetchSQL = "SELECT data1 FROM data WHERE _id = 2"
 		result = self.fetchallWithSQL(self.output_db_file, fetchSQL)
-		self.assertLess((50 - record2Size + 2) * "a", result[0])
+		self.assertLess((50 - record2_size + 2) * "a", result[0])
 
-	def testOverwritedDeletedRecord2(self):
+		existed_results = self.fetchallDefault(self.output_db_file)
+		for n in xrange(len(testData1)):
+			self.assertIn(testData1[n], existed_results)
+
+	def testDeletedOneRecordAndInsertTwoRecords(self):
 		testData1 = (
-			(6, 1, "begining", "", ""),
+			(6, 1, "begining", "bein", "ing"),
 			(10,1, 100 * "a", None, None),
 			(5, 2, "1234567", "1", None))
 
@@ -431,8 +446,11 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 		result = self.fetchallWithSQL(self.output_db_file, fetchSQL)
 		self.assertLess((100 - recordSize_1 - recordSize_2) * "a", result[0])
 
-	def testInsert1200AndRandomDelete500(self):
+		existed_results = self.fetchallDefault(self.output_db_file)
+		for n in xrange(len(testData1)):
+			self.assertIn(testData[1], existed_results)
 
+	def testInsert1200AndRandomDelete500(self):
 		photoTestData = []
 		with open("./res/pic.jpg") as f:
 			data15 = buffer(f.read())
@@ -476,11 +494,134 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 		for n in xrange(len(testData)):
 			self.assertIn(testData[n], results)
 
-	def testDeleteAllWithAutoVacuum(self):
-		self.fail()
+	# May be almost same with the previous one.
+	def testInsert200ContactsIDAndDelete50(self):
+		photoTestData = []
+		with open("./res/pic.jpg") as f:
+			data15 = buffer(f.read())
+		for n in xrange(200):
+			photoTestData.append((6, random.randint(1,200),None, None, None, data15))
 
-	def testInsertAndDeleteSomeContactID(self):
-		self.fail()
+		testData = []
+		for n in xrange(500):
+			# Name or Full data1 to data3
+			testData.append((random.randint(1,15),
+											 random.randint(1,200),
+											 randomLettersDigitsBlank(20),
+											 randomLettersDigitsBlank(10),
+											 randomLettersDigitsBlank(10), None))
+			# Phone or Full data1 to data3
+			testData.append((random.randint(1,15),
+											 random.randint(1,200),
+											 randDig(),
+											 str(random.randint(0,9)),
+											 None, None))
+
+		testData.extend(photoTestData)
+		random.shuffle(testData)
+		testData = tuple(testData)
+
+		insertSQL = "INSERT INTO data (%s,data15) " \
+			"VALUES(?,?,?,?,?,?)" % default_cols
+		self.insertTestDataWithSQL(insertSQL, testData)
+		self.backupDatabaseBeforDeleting()
+
+		# Random delete 50 contacts_id
+		contacts_id_list = [str(x) for x in xrange(200)]
+		random.shuffle(contacts_id_list)
+		for x in id_list[:50]:
+			deleteSQL = "DELETE FROM data WHERE raw_contact_id = %s" % x
+			self.deleteRecordWithSQL(deleteSQL)
+
+		self.parsingDataTableByLoadLibrary()
+
+		fetchSQL = "SELECT %s,data15 FROM data" % default_cols
+		results = self.fetchallWithSQL(self.output_db_file, fetchSQL)
+
+		for n in xrange(len(testData)):
+			self.assertIn(testData[n], results)
+
+	def testDeleteMoreThanOnePageWithAutoVacuum(self):
+		createDB(self.input_db_file, self.schema, auto_vacuum = 1)
+		filesize = os.path.getsize(self.input_db_file)
+		pagesize = filesize/4
+
+		testData = []
+		length = 200
+		for n in xrange(length):
+			testData.append((random.randint(1,15),
+											 random.randint(1,200),
+											 randomLettersDigitsBlank(20),
+											 randomLettersDigitsBlank(10),
+											 randomLettersDigitsBlank(10)))
+
+		testData = tuple(testData)
+		self.insertNormalTestData(testData)
+		self.backupDatabaseBeforDeleting()
+
+		newfilesize = os.path.getsize(self.input_db_file)
+		increment_pages = (newfilesize - filesize) / pagesize
+		record_nums_per_page = length/increment_pages
+
+		# can found data at [found_start, deleted_end]
+		# 1.7 and 1.3 is estimated value
+		deleted_end = int(record_nums_per_page * 1.7)
+		found_start = int(record_nums_per_page * 1.3)
+
+		for n in xrange(deleted_end):
+			self.deleteRecordWithID(n)
+
+		self.parsingDataTableByLoadLibrary()
+
+		results = self.fetchallDefault(self.output_db_file)
+
+		for n in xrange(found_start, length):
+			self.assertIn(testData[n], results,
+				"testData[%d] not found in results. \n" % n \
+				+ "records per page is about: %d \n" % record_nums_per_page \
+				+ "delete records from 0 to %d \n" % deleted_end \
+				+ "find records from %d to %d" % (found_start, length))
+
+	# May be almost same with the previous one.
+	def testDeleteAllWithAutoVacuum(self):
+		createDB(self.input_db_file, self.schema, auto_vacuum = 1)
+		filesize = os.path.getsize(self.input_db_file)
+		pagesize = filesize/4
+
+		testData = []
+		length = 200
+		for n in xrange(length):
+			testData.append((random.randint(1,15),
+											 random.randint(1,200),
+											 randomLettersDigitsBlank(20),
+											 randomLettersDigitsBlank(10),
+											 randomLettersDigitsBlank(10)))
+
+		testData = tuple(testData)
+		self.insertNormalTestData(testData)
+		self.backupDatabaseBeforDeleting()
+
+		newfilesize = os.path.getsize(self.input_db_file)
+		increment_pages = (newfilesize - filesize) / pagesize
+		record_nums_per_page = length/increment_pages
+
+		# I'm not sure which records will keep
+		# The begin or end?
+		deleteSQL = "DELETE FROM data WHERE 1=1"
+		self.deleteRecordWithSQL(deleteSQL)
+
+		self.parsingDataTableByLoadLibrary()
+
+		results = self.fetchallDefault(self.output_db_file)
+
+		# Could find the end page?
+		found_start = int(record_nums_per_page * ((increment_pages - 1) + 0.2))
+		for n in xrange(found_start, length):
+			self.assertIn(testData[n], results,
+				"testData[%d] not found in results. \n" % n \
+				+ "records per page is about: %d \n" % record_nums_per_page \
+				+ "delete all records \n" \
+				+ "find records from %d to %d" % (found_start, length))
 
 
 if __name__ == '__main__':

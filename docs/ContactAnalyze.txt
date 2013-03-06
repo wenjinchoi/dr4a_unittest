@@ -154,4 +154,37 @@ relationship
 3) reset Database
 4) reset Database, and wipe partition?
 5) reset Database, and ?
-6)
+6) delete in raw_contacts and data
+
+四、 Test Case
+
+testColumns
+	常用列
+	全部列
+testEveryTypeData
+	常规记录
+	随机值
+	溢出页(常见于Note, Photo)
+testEveryInsertDeleteType
+	删除1条记录
+	删除1条记录, 覆盖部分
+	删除1条记录, 覆盖全部
+	删除1条记录的空闲空间, 插入多条记录
+	删除连续n条记录(n>2, 下同)
+	删除连续n条记录, 覆盖其中m(m<n)条 以及 m+1条的部分
+	删除连续n条记录, 覆盖其中n-1条
+	删除连续n条记录, 覆盖全部
+	插入n个联系人资料, 其中每个联系人有若干项data, 批量删除 m 个联系人
+testManyData
+	non-auto-vacuum
+	插入x条记录, 删除y条记录
+	插入x条记录, 删除y条记录, 再插入z条记录
+	auto-cacuum
+	插入x条记录, 使得表占n(n>=2)页以上, 删除第一页所有数据
+testCombinationData
+testTextEncoding
+	utf-8(各语言区间)
+testValue
+	整形值: 边界值、约束范围、Reference, NOT NULL, Default值
+	字符值: ascii, utf-8(多语言区间), 不可见字符,表情,长度
+	BLOB: Photo二进制内容
