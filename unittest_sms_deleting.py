@@ -4,9 +4,11 @@ import sqlite3
 import os
 import unittest
 
-from sqlite_utils import *
-from loadFunction import parsingByLoadLibrary, SCAN_TYPE_MMSSMS
 from templates import testDeviceOfMmssms
+
+from utils.loadFunction import parsingByLoadLibrary, SCAN_TYPE_MMSSMS
+from utils.sqlitefile_utils import *
+
 
 faked = True
 

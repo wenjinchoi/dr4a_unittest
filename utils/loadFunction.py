@@ -91,7 +91,8 @@ def parsingByLoadLibrary(tDeviceInfo, scan_type, input_db_path, output_db_file):
 
 
 class Scanner():
-	def __init__(self, DeviceInfoTuple, scan_type, input_db_path, output_db_file):
+	def __init__(self, DeviceInfoTuple, input_db_path, output_db_file,
+							scan_type = SCAN_TYPE_CONTACTS):
 		self.pConfigFile = c_wchar_p('WSConfigerDB.db')
 		self.pDeviceInfo = self._convertDeviceInfo(DeviceInfoTuple)
 
@@ -105,12 +106,12 @@ class Scanner():
 		libscaner = cdll.LoadLibrary("WSDBRecovery.dll")
 
 		redirect_stdout()
-		libscaner.WSDBRecoveryInit(pConfigFile, pDeviceInfo)
+		libscaner.WSDBRecoveryInit(self.pConfigFile, self.pDeviceInfo)
 
 	def _convertDeviceInfo(self, DeviceInfoTuple):
-		deviceInfo = DeviceInfo(c_wchar_p(tDeviceInfo[0]),
-           		    				  c_wchar_p(tDeviceInfo[1]),
-                					  c_wchar_p(tDeviceInfo[2]))
+		deviceInfo = DeviceInfo(c_wchar_p(DeviceInfoTuple[0]),
+           		    				  c_wchar_p(DeviceInfoTuple[1]),
+                					  c_wchar_p(DeviceInfoTuple[2]))
 		return addressof(deviceInfo)
 
 	def _scan(self):
