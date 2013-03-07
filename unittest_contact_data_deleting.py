@@ -454,7 +454,10 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 
 		existed_results = self.fetchallDefault(self.output_db_file)
 		for n in xrange(len(testData1)):
-			self.assertIn(testData[1], existed_results)
+			if n == 1: continue
+			self.assertIn(testData1[n], existed_results)
+		for n in xrange(len(testData2)):
+			self.assertIn(testData2[n], existed_results)
 
 	def testInsert1200AndRandomDelete500(self):
 		photoTestData = []

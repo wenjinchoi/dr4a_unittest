@@ -229,12 +229,10 @@ class SMSTestCase(unittest.TestCase):
 		self.assertTrue(testDataFirst[3] in results)
 		self.assertTrue(testDataFirst[4] in results)
 
-
-
 	def templateTestAddressWithLengthAndChar(self, lengthOfAddress, char):
 		testData = (
-			('0000',  1, 1357005600, 1, 'Record 0'),
-			(lengthOfAddress * char, 2, 1357005601, 1, 'Record 2'))
+			('0000', 1, 1357005600, 1, 'Record 0'),
+			((lengthOfAddress * char), 2, 1357005601, 1, 'Record 2'))
 
 		self.insertAndDeleteLeftTheFirstOne(self.tmpdb_path, testData)
 		self.parsing_db(self.tmpdb_path, self.output_db_filepath)
@@ -252,6 +250,7 @@ class SMSTestCase(unittest.TestCase):
 
 	def testAddressWith1to101LengthBy10Increment(self):
 		for n in xrange(1, 101, 10):
+			self.setUp()
 			self.templateTestAddressWithLengthAndChar(n, "1")
 
 	def testAddressWith500char(self):
