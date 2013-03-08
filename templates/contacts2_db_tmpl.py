@@ -434,7 +434,7 @@ data_device_schemas = {
 
 
 # htc_2_2_1
-data_htc_2_2_1 = '''CREATE TABLE raw_contacts
+raw_contacts_htc_2_2_1 = '''CREATE TABLE raw_contacts
 (_id INTEGER PRIMARY KEY AUTOINCREMENT,
 is_restricted INTEGER DEFAULT 0,
 account_name STRING DEFAULT NULL,
@@ -456,8 +456,8 @@ display_name_alt TEXT,
 display_name_source INTEGER NOT NULL DEFAULT 0,
 phonetic_name TEXT,
 phonetic_name_style TEXT,
-sort_key TEXT COLLATE PHONEBOOK,
-sort_key_alt TEXT COLLATE PHONEBOOK,
+sort_key TEXT,
+sort_key_alt TEXT,
 name_verified INTEGER NOT NULL DEFAULT 0,
 contact_in_visible_group INTEGER NOT NULL DEFAULT 0,
 sync1 TEXT,
@@ -468,7 +468,7 @@ vip INTEGER NOT NULL DEFAULT 0);
 '''
 
 # samsung_GT_i897or9000_2_3_4
-data_samsung_GT_i897or9000_2_3_4 = '''CREATE TABLE raw_contacts
+raw_contacts_samsung_GT_i897or9000_2_3_4 = '''CREATE TABLE raw_contacts
 (_id INTEGER PRIMARY KEY AUTOINCREMENT,
 is_restricted INTEGER DEFAULT 0,
 account_name STRING DEFAULT NULL,
@@ -490,8 +490,8 @@ display_name_alt TEXT,
 display_name_source INTEGER NOT NULL DEFAULT 0,
 phonetic_name TEXT,
 phonetic_name_style TEXT,
-sort_key TEXT COLLATE PHONEBOOK,
-sort_key_alt TEXT COLLATE PHONEBOOK,
+sort_key TEXT,
+sort_key_alt TEXT,
 name_verified INTEGER NOT NULL DEFAULT 0,
 contact_in_visible_group INTEGER NOT NULL DEFAULT 0,
 sync1 TEXT,
@@ -504,7 +504,7 @@ is_sim INTEGER DEFAULT 0 );
 '''
 
 # samsung_GT_I9001_2_3_6
-data_samsung_GT_I9001_2_3_6 = '''CREATE TABLE raw_contacts
+raw_contacts_samsung_GT_I9001_2_3_6 = '''CREATE TABLE raw_contacts
 (_id INTEGER PRIMARY KEY AUTOINCREMENT,
 is_restricted INTEGER DEFAULT 0,
 account_name STRING DEFAULT NULL,
@@ -526,8 +526,8 @@ display_name_alt TEXT,
 display_name_source INTEGER NOT NULL DEFAULT 0,
 phonetic_name TEXT,
 phonetic_name_style TEXT,
-sort_key TEXT COLLATE PHONEBOOK,
-sort_key_alt TEXT COLLATE PHONEBOOK,
+sort_key TEXT,
+sort_key_alt TEXT,
 name_verified INTEGER NOT NULL DEFAULT 0,
 contact_in_visible_group INTEGER NOT NULL DEFAULT 0,
 sync1 TEXT,
@@ -540,7 +540,7 @@ is_sim INTEGER DEFAULT 0 );
 '''
 
 # samsung_gt_i9003_2_3_5
-data_samsung_gt_i9003_2_3_5 = '''CREATE TABLE raw_contacts
+raw_contacts_samsung_gt_i9003_2_3_5 = '''CREATE TABLE raw_contacts
 (_id INTEGER PRIMARY KEY AUTOINCREMENT,
 is_restricted INTEGER DEFAULT 0,
 account_name STRING DEFAULT NULL,
@@ -562,8 +562,8 @@ display_name_alt TEXT,
 display_name_source INTEGER NOT NULL DEFAULT 0,
 phonetic_name TEXT,
 phonetic_name_style TEXT,
-sort_key TEXT COLLATE PHONEBOOK,
-sort_key_alt TEXT COLLATE PHONEBOOK,
+sort_key TEXT,
+sort_key_alt TEXT,
 name_verified INTEGER NOT NULL DEFAULT 0,
 contact_in_visible_group INTEGER NOT NULL DEFAULT 0,
 sync1 TEXT,
@@ -576,7 +576,7 @@ is_sim INTEGER DEFAULT 0 );
 '''
 
 # samsung_gt_i9300_4_1_2
-data_samsung_gt_i9300_4_1_2 = '''CREATE TABLE raw_contacts
+raw_contacts_samsung_gt_i9300_4_1_2 = '''CREATE TABLE raw_contacts
 (_id INTEGER PRIMARY KEY AUTOINCREMENT,
 is_restricted INTEGER DEFAULT 0,
 account_id INTEGER,
@@ -598,8 +598,8 @@ display_name_alt TEXT,
 display_name_source INTEGER NOT NULL DEFAULT 0,
 phonetic_name TEXT,
 phonetic_name_style TEXT,
-sort_key TEXT COLLATE PHONEBOOK,
-sort_key_alt TEXT COLLATE PHONEBOOK,
+sort_key TEXT,
+sort_key_alt TEXT,
 name_verified INTEGER NOT NULL DEFAULT 0,
 sync1 TEXT,
 sync2 TEXT,
@@ -611,7 +611,7 @@ sec_custom_alert TEXT);
 '''
 
 # samsung_gt_n7000_4_0_3
-data_samsung_gt_n7000_4_0_3 = '''CREATE TABLE raw_contacts
+raw_contacts_samsung_gt_n7000_4_0_3 = '''CREATE TABLE raw_contacts
 (_id INTEGER PRIMARY KEY AUTOINCREMENT,
 is_restricted INTEGER DEFAULT 0,
 account_name STRING DEFAULT NULL,
@@ -635,8 +635,8 @@ display_name_alt TEXT,
 display_name_source INTEGER NOT NULL DEFAULT 0,
 phonetic_name TEXT,
 phonetic_name_style TEXT,
-sort_key TEXT COLLATE PHONEBOOK,
-sort_key_alt TEXT COLLATE PHONEBOOK,
+sort_key TEXT,
+sort_key_alt TEXT,
 name_verified INTEGER NOT NULL DEFAULT 0,
 sync1 TEXT,
 sync2 TEXT,
@@ -647,7 +647,7 @@ sec_custom_vibration TEXT);
 '''
 
 # samsung_GT_N7000_4_0_4
-data_samsung_GT_N7000_4_0_4 = '''CREATE TABLE raw_contacts
+raw_contacts_samsung_GT_N7000_4_0_4 = '''CREATE TABLE raw_contacts
 (_id INTEGER PRIMARY KEY AUTOINCREMENT,
 is_restricted INTEGER DEFAULT 0,
 account_name STRING DEFAULT NULL,
@@ -671,8 +671,8 @@ display_name_alt TEXT,
 display_name_source INTEGER NOT NULL DEFAULT 0,
 phonetic_name TEXT,
 phonetic_name_style TEXT,
-sort_key TEXT COLLATE PHONEBOOK,
-sort_key_alt TEXT COLLATE PHONEBOOK,
+sort_key TEXT,
+sort_key_alt TEXT,
 name_verified INTEGER NOT NULL DEFAULT 0,
 sync1 TEXT,
 sync2 TEXT,
@@ -683,7 +683,7 @@ sec_custom_vibration TEXT);
 '''
 
 # samsung_gt_n7100_4_1_1
-data_samsung_gt_n7100_4_1_1 = '''CREATE TABLE raw_contacts
+raw_contacts_samsung_gt_n7100_4_1_1 = '''CREATE TABLE raw_contacts
 (_id INTEGER PRIMARY KEY AUTOINCREMENT,
 is_restricted INTEGER DEFAULT 0,
 account_id INTEGER,
@@ -705,8 +705,8 @@ display_name_alt TEXT,
 display_name_source INTEGER NOT NULL DEFAULT 0,
 phonetic_name TEXT,
 phonetic_name_style TEXT,
-sort_key TEXT COLLATE PHONEBOOK,
-sort_key_alt TEXT COLLATE PHONEBOOK,
+sort_key TEXT,
+sort_key_alt TEXT,
 name_verified INTEGER NOT NULL DEFAULT 0,
 sync1 TEXT,
 sync2 TEXT,
@@ -718,7 +718,7 @@ sec_custom_alert TEXT);
 '''
 
 # samsung_GT_N8000_4_1_1
-data_samsung_GT_N8000_4_1_1 = '''CREATE TABLE raw_contacts
+raw_contacts_samsung_GT_N8000_4_1_1 = '''CREATE TABLE raw_contacts
 (_id INTEGER PRIMARY KEY AUTOINCREMENT,
 is_restricted INTEGER DEFAULT 0,
 account_name STRING DEFAULT NULL,
@@ -742,8 +742,8 @@ display_name_alt TEXT,
 display_name_source INTEGER NOT NULL DEFAULT 0,
 phonetic_name TEXT,
 phonetic_name_style TEXT,
-sort_key TEXT COLLATE PHONEBOOK,
-sort_key_alt TEXT COLLATE PHONEBOOK,
+sort_key TEXT,
+sort_key_alt TEXT,
 name_verified INTEGER NOT NULL DEFAULT 0,
 sync1 TEXT,
 sync2 TEXT,
@@ -754,7 +754,7 @@ sec_custom_vibration TEXT);
 '''
 
 # samsung_P5100_4_0_3
-data_samsung_P5100_4_0_3 = '''CREATE TABLE raw_contacts
+raw_contacts_samsung_P5100_4_0_3 = '''CREATE TABLE raw_contacts
 (_id INTEGER PRIMARY KEY AUTOINCREMENT,
 is_restricted INTEGER DEFAULT 0,
 account_name STRING DEFAULT NULL,
@@ -778,8 +778,8 @@ display_name_alt TEXT,
 display_name_source INTEGER NOT NULL DEFAULT 0,
 phonetic_name TEXT,
 phonetic_name_style TEXT,
-sort_key TEXT COLLATE PHONEBOOK,
-sort_key_alt TEXT COLLATE PHONEBOOK,
+sort_key TEXT,
+sort_key_alt TEXT,
 name_verified INTEGER NOT NULL DEFAULT 0,
 sync1 TEXT,
 sync2 TEXT,
@@ -790,7 +790,7 @@ sec_custom_vibration TEXT);
 '''
 
 # samsung_SCH_I909_2_2_2
-data_samsung_SCH_I909_2_2_2 = '''CREATE TABLE raw_contacts
+raw_contacts_samsung_SCH_I909_2_2_2 = '''CREATE TABLE raw_contacts
 (_id INTEGER PRIMARY KEY AUTOINCREMENT,
 is_restricted INTEGER DEFAULT 0,
 account_name STRING DEFAULT NULL,
@@ -812,8 +812,8 @@ display_name_alt TEXT,
 display_name_source INTEGER NOT NULL DEFAULT 0,
 phonetic_name TEXT,
 phonetic_name_style TEXT,
-sort_key TEXT COLLATE PHONEBOOK,
-sort_key_alt TEXT COLLATE PHONEBOOK,
+sort_key TEXT,
+sort_key_alt TEXT,
 name_verified INTEGER NOT NULL DEFAULT 0,
 contact_in_visible_group INTEGER NOT NULL DEFAULT 0,
 sync1 TEXT,
@@ -827,7 +827,7 @@ is_sim INTEGER DEFAULT 0);
 '''
 
 # samsung_SGH_I927_4_0_4
-data_samsung_SGH_I927_4_0_4 = '''CREATE TABLE raw_contacts
+raw_contacts_samsung_SGH_I927_4_0_4 = '''CREATE TABLE raw_contacts
 (_id INTEGER PRIMARY KEY AUTOINCREMENT,
 is_restricted INTEGER DEFAULT 0,
 account_name STRING DEFAULT NULL,
@@ -851,8 +851,8 @@ display_name_alt TEXT,
 display_name_source INTEGER NOT NULL DEFAULT 0,
 phonetic_name TEXT,
 phonetic_name_style TEXT,
-sort_key TEXT COLLATE PHONEBOOK,
-sort_key_alt TEXT COLLATE PHONEBOOK,
+sort_key TEXT,
+sort_key_alt TEXT,
 name_verified INTEGER NOT NULL DEFAULT 0,
 sync1 TEXT,
 sync2 TEXT,
@@ -863,7 +863,7 @@ sec_custom_vibration TEXT);
 '''
 
 # Samsung_SGH_I997_2_2_1
-data_Samsung_SGH_I997_2_2_1 = '''CREATE TABLE raw_contacts
+raw_contacts_Samsung_SGH_I997_2_2_1 = '''CREATE TABLE raw_contacts
 (_id INTEGER PRIMARY KEY AUTOINCREMENT,
 is_restricted INTEGER DEFAULT 0,
 account_name STRING DEFAULT NULL,
@@ -885,8 +885,8 @@ display_name_alt TEXT,
 display_name_source INTEGER NOT NULL DEFAULT 0,
 phonetic_name TEXT,
 phonetic_name_style TEXT,
-sort_key TEXT COLLATE PHONEBOOK,
-sort_key_alt TEXT COLLATE PHONEBOOK,
+sort_key TEXT,
+sort_key_alt TEXT,
 name_verified INTEGER NOT NULL DEFAULT 0,
 contact_in_visible_group INTEGER NOT NULL DEFAULT 0,
 sync1 TEXT,
@@ -905,7 +905,7 @@ uid TEXT );
 '''
 
 # samsung_SGH_T759_2_3_3
-data_samsung_SGH_T759_2_3_3 = '''CREATE TABLE raw_contacts
+raw_contacts_samsung_SGH_T759_2_3_3 = '''CREATE TABLE raw_contacts
 (_id INTEGER PRIMARY KEY AUTOINCREMENT,
 is_restricted INTEGER DEFAULT 0,
 account_name STRING DEFAULT NULL,
@@ -927,8 +927,8 @@ display_name_alt TEXT,
 display_name_source INTEGER NOT NULL DEFAULT 0,
 phonetic_name TEXT,
 phonetic_name_style TEXT,
-sort_key TEXT COLLATE PHONEBOOK,
-sort_key_alt TEXT COLLATE PHONEBOOK,
+sort_key TEXT,
+sort_key_alt TEXT,
 name_verified INTEGER NOT NULL DEFAULT 0,
 contact_in_visible_group INTEGER NOT NULL DEFAULT 0,
 sync1 TEXT,
@@ -941,7 +941,7 @@ is_sim INTEGER DEFAULT 0 );
 '''
 
 # samsung_SPH_D710_4_0_4
-data_samsung_SPH_D710_4_0_4 = '''CREATE TABLE raw_contacts
+raw_contacts_samsung_SPH_D710_4_0_4 = '''CREATE TABLE raw_contacts
 (_id INTEGER PRIMARY KEY AUTOINCREMENT,
 is_restricted INTEGER DEFAULT 0,
 account_name STRING DEFAULT NULL,
@@ -965,8 +965,8 @@ display_name_alt TEXT,
 display_name_source INTEGER NOT NULL DEFAULT 0,
 phonetic_name TEXT,
 phonetic_name_style TEXT,
-sort_key TEXT COLLATE PHONEBOOK,
-sort_key_alt TEXT COLLATE PHONEBOOK,
+sort_key TEXT,
+sort_key_alt TEXT,
 name_verified INTEGER NOT NULL DEFAULT 0,
 sync1 TEXT,
 sync2 TEXT,
@@ -977,7 +977,7 @@ sec_custom_vibration TEXT);
 '''
 
 # samsung_GT_9100_4_0_4
-data_samsung_GT_9100_4_0_4 = '''CREATE TABLE raw_contacts
+raw_contacts_samsung_GT_9100_4_0_4 = '''CREATE TABLE raw_contacts
 (_id INTEGER PRIMARY KEY AUTOINCREMENT,
 is_restricted INTEGER DEFAULT 0,
 account_name STRING DEFAULT NULL,
@@ -1001,8 +1001,8 @@ display_name_alt TEXT,
 display_name_source INTEGER NOT NULL DEFAULT 0,
 phonetic_name TEXT,
 phonetic_name_style TEXT,
-sort_key TEXT COLLATE PHONEBOOK,
-sort_key_alt TEXT COLLATE PHONEBOOK,
+sort_key TEXT,
+sort_key_alt TEXT,
 name_verified INTEGER NOT NULL DEFAULT 0,
 sync1 TEXT,
 sync2 TEXT,
@@ -1013,7 +1013,7 @@ sec_custom_vibration TEXT);
 '''
 
 # samsung_GT_9250_4_2_2
-data_samsung_GT_9250_4_2_2 = '''CREATE TABLE raw_contacts
+raw_contacts_samsung_GT_9250_4_2_2 = '''CREATE TABLE raw_contacts
 (_id INTEGER PRIMARY KEY AUTOINCREMENT,
 account_id INTEGER,
 sourceid TEXT,
@@ -1034,8 +1034,8 @@ display_name_alt TEXT,
 display_name_source INTEGER NOT NULL DEFAULT 0,
 phonetic_name TEXT,
 phonetic_name_style TEXT,
-sort_key TEXT COLLATE PHONEBOOK,
-sort_key_alt TEXT COLLATE PHONEBOOK,
+sort_key TEXT,
+sort_key_alt TEXT,
 name_verified INTEGER NOT NULL DEFAULT 0,
 sync1 TEXT,
 sync2 TEXT,
@@ -1044,7 +1044,7 @@ sync4 TEXT );
 '''
 
 # samsung_GT_I9000_2_3_4
-data_samsung_GT_I9000_2_3_4 = '''CREATE TABLE raw_contacts
+raw_contacts_samsung_GT_I9000_2_3_4 = '''CREATE TABLE raw_contacts
 (_id INTEGER PRIMARY KEY AUTOINCREMENT,
 is_restricted INTEGER DEFAULT 0,
 account_name STRING DEFAULT NULL,
@@ -1066,8 +1066,8 @@ display_name_alt TEXT,
 display_name_source INTEGER NOT NULL DEFAULT 0,
 phonetic_name TEXT,
 phonetic_name_style TEXT,
-sort_key TEXT COLLATE PHONEBOOK,
-sort_key_alt TEXT COLLATE PHONEBOOK,
+sort_key TEXT,
+sort_key_alt TEXT,
 name_verified INTEGER NOT NULL DEFAULT 0,
 contact_in_visible_group INTEGER NOT NULL DEFAULT 0,
 sync1 TEXT,
@@ -1080,7 +1080,7 @@ is_sim INTEGER DEFAULT 0 );
 '''
 
 # samsung_GT_I9100G_4_0_4
-data_samsung_GT_I9100G_4_0_4 = '''CREATE TABLE raw_contacts
+raw_contacts_samsung_GT_I9100G_4_0_4 = '''CREATE TABLE raw_contacts
 (_id INTEGER PRIMARY KEY AUTOINCREMENT,
 is_restricted INTEGER DEFAULT 0,
 account_name STRING DEFAULT NULL,
@@ -1104,8 +1104,8 @@ display_name_alt TEXT,
 display_name_source INTEGER NOT NULL DEFAULT 0,
 phonetic_name TEXT,
 phonetic_name_style TEXT,
-sort_key TEXT COLLATE PHONEBOOK,
-sort_key_alt TEXT COLLATE PHONEBOOK,
+sort_key TEXT,
+sort_key_alt TEXT,
 name_verified INTEGER NOT NULL DEFAULT 0,
 sync1 TEXT,
 sync2 TEXT,
@@ -1116,7 +1116,7 @@ sec_custom_vibration TEXT);
 '''
 
 # samsung_GT_N8000_4_0_4
-data_samsung_GT_N8000_4_0_4 = '''CREATE TABLE raw_contacts
+raw_contacts_samsung_GT_N8000_4_0_4 = '''CREATE TABLE raw_contacts
 (_id INTEGER PRIMARY KEY AUTOINCREMENT,
 is_restricted INTEGER DEFAULT 0,
 account_name STRING DEFAULT NULL,
@@ -1140,8 +1140,8 @@ display_name_alt TEXT,
 display_name_source INTEGER NOT NULL DEFAULT 0,
 phonetic_name TEXT,
 phonetic_name_style TEXT,
-sort_key TEXT COLLATE PHONEBOOK,
-sort_key_alt TEXT COLLATE PHONEBOOK,
+sort_key TEXT,
+sort_key_alt TEXT,
 name_verified INTEGER NOT NULL DEFAULT 0,
 sync1 TEXT,
 sync2 TEXT,
@@ -1152,7 +1152,7 @@ sec_custom_vibration TEXT);
 '''
 
 # samsung_GT_P1000_2_2_1
-data_samsung_GT_P1000_2_2_1 = '''CREATE TABLE raw_contacts
+raw_contacts_samsung_GT_P1000_2_2_1 = '''CREATE TABLE raw_contacts
 (_id INTEGER PRIMARY KEY AUTOINCREMENT,
 is_restricted INTEGER DEFAULT 0,
 account_name STRING DEFAULT NULL,
@@ -1174,8 +1174,8 @@ display_name_alt TEXT,
 display_name_source INTEGER NOT NULL DEFAULT 0,
 phonetic_name TEXT,
 phonetic_name_style TEXT,
-sort_key TEXT COLLATE PHONEBOOK,
-sort_key_alt TEXT COLLATE PHONEBOOK,
+sort_key TEXT,
+sort_key_alt TEXT,
 name_verified INTEGER NOT NULL DEFAULT 0,
 contact_in_visible_group INTEGER NOT NULL DEFAULT 0,
 sync1 TEXT,
@@ -1190,7 +1190,7 @@ action_code TEXT );
 '''
 
 # samsung_GT_P7500_4_0_4
-data_samsung_GT_P7500_4_0_4 = '''CREATE TABLE raw_contacts
+raw_contacts_samsung_GT_P7500_4_0_4 = '''CREATE TABLE raw_contacts
 (_id INTEGER PRIMARY KEY AUTOINCREMENT,
 is_restricted INTEGER DEFAULT 0,
 account_name STRING DEFAULT NULL,
@@ -1213,8 +1213,8 @@ display_name_alt TEXT,
 display_name_source INTEGER NOT NULL DEFAULT 0,
 phonetic_name TEXT,
 phonetic_name_style TEXT,
-sort_key TEXT COLLATE PHONEBOOK,
-sort_key_alt TEXT COLLATE PHONEBOOK,
+sort_key TEXT,
+sort_key_alt TEXT,
 name_verified INTEGER NOT NULL DEFAULT 0,
 sync1 TEXT,
 sync2 TEXT,
@@ -1229,7 +1229,7 @@ creation_time TEXT);
 '''
 
 # samsung_GT_S5570_2_2_1
-data_samsung_GT_S5570_2_2_1 = '''CREATE TABLE raw_contacts
+raw_contacts_samsung_GT_S5570_2_2_1 = '''CREATE TABLE raw_contacts
 (_id INTEGER PRIMARY KEY AUTOINCREMENT,
 is_restricted INTEGER DEFAULT 0,
 account_name STRING DEFAULT NULL,
@@ -1251,8 +1251,8 @@ display_name_alt TEXT,
 display_name_source INTEGER NOT NULL DEFAULT 0,
 phonetic_name TEXT,
 phonetic_name_style TEXT,
-sort_key TEXT COLLATE PHONEBOOK,
-sort_key_alt TEXT COLLATE PHONEBOOK,
+sort_key TEXT,
+sort_key_alt TEXT,
 name_verified INTEGER NOT NULL DEFAULT 0,
 contact_in_visible_group INTEGER NOT NULL DEFAULT 0,
 sync1 TEXT,
@@ -1269,7 +1269,7 @@ sort_locale_alt INTEGER NOT NULL DEFAULT 0 );
 '''
 
 # samsung_GT_S5670_2_2_1
-data_samsung_GT_S5670_2_2_1 = '''CREATE TABLE raw_contacts
+raw_contacts_samsung_GT_S5670_2_2_1 = '''CREATE TABLE raw_contacts
 (_id INTEGER PRIMARY KEY AUTOINCREMENT,
 is_restricted INTEGER DEFAULT 0,
 account_name STRING DEFAULT NULL,
@@ -1291,8 +1291,8 @@ display_name_alt TEXT,
 display_name_source INTEGER NOT NULL DEFAULT 0,
 phonetic_name TEXT,
 phonetic_name_style TEXT,
-sort_key TEXT COLLATE PHONEBOOK,
-sort_key_alt TEXT COLLATE PHONEBOOK,
+sort_key TEXT,
+sort_key_alt TEXT,
 name_verified INTEGER NOT NULL DEFAULT 0,
 contact_in_visible_group INTEGER NOT NULL DEFAULT 0,
 sync1 TEXT,
@@ -1309,7 +1309,7 @@ sort_locale_alt INTEGER NOT NULL DEFAULT 0 );
 '''
 
 # samsung_GT_S5830_2_3_4
-data_samsung_GT_S5830_2_3_4 = '''CREATE TABLE raw_contacts
+raw_contacts_samsung_GT_S5830_2_3_4 = '''CREATE TABLE raw_contacts
 (_id INTEGER PRIMARY KEY AUTOINCREMENT,
 is_restricted INTEGER DEFAULT 0,
 account_name STRING DEFAULT NULL,
@@ -1331,8 +1331,8 @@ display_name_alt TEXT,
 display_name_source INTEGER NOT NULL DEFAULT 0,
 phonetic_name TEXT,
 phonetic_name_style TEXT,
-sort_key TEXT COLLATE PHONEBOOK,
-sort_key_alt TEXT COLLATE PHONEBOOK,
+sort_key TEXT,
+sort_key_alt TEXT,
 name_verified INTEGER NOT NULL DEFAULT 0,
 contact_in_visible_group INTEGER NOT NULL DEFAULT 0,
 sync1 TEXT,
@@ -1345,7 +1345,7 @@ is_sim INTEGER DEFAULT 0 );
 '''
 
 # samsung_SGH_I997_2_2_1
-data_samsung_SGH_I997_2_2_1 = '''CREATE TABLE raw_contacts
+raw_contacts_samsung_SGH_I997_2_2_1 = '''CREATE TABLE raw_contacts
 (_id INTEGER PRIMARY KEY AUTOINCREMENT,
 is_restricted INTEGER DEFAULT 0,
 account_name STRING DEFAULT NULL,
@@ -1367,8 +1367,8 @@ display_name_alt TEXT,
 display_name_source INTEGER NOT NULL DEFAULT 0,
 phonetic_name TEXT,
 phonetic_name_style TEXT,
-sort_key TEXT COLLATE PHONEBOOK,
-sort_key_alt TEXT COLLATE PHONEBOOK,
+sort_key TEXT,
+sort_key_alt TEXT,
 name_verified INTEGER NOT NULL DEFAULT 0,
 contact_in_visible_group INTEGER NOT NULL DEFAULT 0,
 sync1 TEXT,
@@ -1388,28 +1388,28 @@ uid TEXT );
 
 raw_contacts_device_schemas = {
   "htc_2_2_1" : data_htc_2_2_1,
-  "samsung_GT_i897or9000_2_3_4" : data_samsung_GT_i897or9000_2_3_4,
-  "samsung_GT_I9001_2_3_6" : data_samsung_GT_I9001_2_3_6,
-  "samsung_gt_i9003_2_3_5" : data_samsung_gt_i9003_2_3_5,
-  "samsung_gt_i9300_4_1_2" : data_samsung_gt_i9300_4_1_2,
-  "samsung_gt_n7000_4_0_3" : data_samsung_gt_n7000_4_0_3,
-  "samsung_GT_N7000_4_0_4" : data_samsung_GT_N7000_4_0_4,
-  "samsung_gt_n7100_4_1_1" : data_samsung_gt_n7100_4_1_1,
-  "samsung_GT_N8000_4_1_1" : data_samsung_GT_N8000_4_1_1,
-  "samsung_P5100_4_0_3" : data_samsung_P5100_4_0_3,
-  "samsung_SCH_I909_2_2_2" : data_samsung_SCH_I909_2_2_2,
-  "samsung_SGH_I927_4_0_4" : data_samsung_SGH_I927_4_0_4,
-  "Samsung_SGH_I997_2_2_1" : data_Samsung_SGH_I997_2_2_1,
-  "samsung_SGH_T759_2_3_3" : data_samsung_SGH_T759_2_3_3,
-  "samsung_SPH_D710_4_0_4" : data_samsung_SPH_D710_4_0_4,
-  "samsung_GT_9100_4_0_4" : data_samsung_GT_9100_4_0_4,
-  "samsung_GT_9250_4_2_2" : data_samsung_GT_9250_4_2_2,
-  "samsung_GT_I9000_2_3_4" : data_samsung_GT_I9000_2_3_4,
-  "samsung_GT_I9100G_4_0_4" : data_samsung_GT_I9100G_4_0_4,
-  "samsung_GT_N8000_4_0_4" : data_samsung_GT_N8000_4_0_4,
-  "samsung_GT_P1000_2_2_1" : data_samsung_GT_P1000_2_2_1,
-  "samsung_GT_P7500_4_0_4" : data_samsung_GT_P7500_4_0_4,
-  "samsung_GT_S5570_2_2_1" : data_samsung_GT_S5570_2_2_1,
-  "samsung_GT_S5670_2_2_1" : data_samsung_GT_S5670_2_2_1,
-  "samsung_GT_S5830_2_3_4" : data_samsung_GT_S5830_2_3_4,
-  "samsung_SGH_I997_2_2_1" : data_samsung_SGH_I997_2_2_1 }
+  "samsung_GT_i897or9000_2_3_4" : raw_contacts_samsung_GT_i897or9000_2_3_4,
+  "samsung_GT_I9001_2_3_6" : raw_contacts_samsung_GT_I9001_2_3_6,
+  "samsung_gt_i9003_2_3_5" : raw_contacts_samsung_gt_i9003_2_3_5,
+  "samsung_gt_i9300_4_1_2" : raw_contacts_samsung_gt_i9300_4_1_2,
+  "samsung_gt_n7000_4_0_3" : raw_contacts_samsung_gt_n7000_4_0_3,
+  "samsung_GT_N7000_4_0_4" : raw_contacts_samsung_GT_N7000_4_0_4,
+  "samsung_gt_n7100_4_1_1" : raw_contacts_samsung_gt_n7100_4_1_1,
+  "samsung_GT_N8000_4_1_1" : raw_contacts_samsung_GT_N8000_4_1_1,
+  "samsung_P5100_4_0_3" : raw_contacts_samsung_P5100_4_0_3,
+  "samsung_SCH_I909_2_2_2" : raw_contacts_samsung_SCH_I909_2_2_2,
+  "samsung_SGH_I927_4_0_4" : raw_contacts_samsung_SGH_I927_4_0_4,
+  "Samsung_SGH_I997_2_2_1" : raw_contacts_Samsung_SGH_I997_2_2_1,
+  "samsung_SGH_T759_2_3_3" : raw_contacts_samsung_SGH_T759_2_3_3,
+  "samsung_SPH_D710_4_0_4" : raw_contacts_samsung_SPH_D710_4_0_4,
+  "samsung_GT_9100_4_0_4" : raw_contacts_samsung_GT_9100_4_0_4,
+  "samsung_GT_9250_4_2_2" : raw_contacts_samsung_GT_9250_4_2_2,
+  "samsung_GT_I9000_2_3_4" : raw_contacts_samsung_GT_I9000_2_3_4,
+  "samsung_GT_I9100G_4_0_4" : raw_contacts_samsung_GT_I9100G_4_0_4,
+  "samsung_GT_N8000_4_0_4" : raw_contacts_samsung_GT_N8000_4_0_4,
+  "samsung_GT_P1000_2_2_1" : raw_contacts_samsung_GT_P1000_2_2_1,
+  "samsung_GT_P7500_4_0_4" : raw_contacts_samsung_GT_P7500_4_0_4,
+  "samsung_GT_S5570_2_2_1" : raw_contacts_samsung_GT_S5570_2_2_1,
+  "samsung_GT_S5670_2_2_1" : raw_contacts_samsung_GT_S5670_2_2_1,
+  "samsung_GT_S5830_2_3_4" : raw_contacts_samsung_GT_S5830_2_3_4,
+  "samsung_SGH_I997_2_2_1" : raw_contacts_samsung_SGH_I997_2_2_1 }

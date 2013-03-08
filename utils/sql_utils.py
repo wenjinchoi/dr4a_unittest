@@ -25,6 +25,7 @@ def deleteWithIDs(db_file, ids):
 
 def fetchallWithSQL(db_file, sql):
 	with sqlite3.connect(db_file) as conn:
+		conn.text_factory = lambda x: unicode(x, "UTF-8", "ignore")
 		curs = conn.cursor()
 		curs.execute(sql)
 		return curs.fetchall()

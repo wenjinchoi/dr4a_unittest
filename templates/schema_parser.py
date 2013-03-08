@@ -39,6 +39,7 @@ def process_raw_contacts_schema(schema):
 	tmp_schema = tmp_schema.replace("REFERENCES package(_id)", "")
 	tmp_schema = tmp_schema.replace(" REFERENCES accounts(_id)", "")
 	tmp_schema = tmp_schema.replace(" REFERENCES contacts(_id)", "")
+	tmp_schema = tmp_schema.replace(" COLLATE PHONEBOOK", "")
 	tmp_schema = tmp_schema.replace(" ,", ",")
 	tmp_schema = tmp_schema.replace(", ", ",")
 	tmp_schema = tmp_schema.replace(",", ",\n")
@@ -74,7 +75,7 @@ def parse_schema(parsed_path, output_path, split_chars, table_name,
 
 		device_schemas_dict = "%s_device_schemas = {\n" % table_name
 		for d in devices:
-			device_schemas_dict += '  "%s" : data_%s,\n' % (d, d)
+			device_schemas_dict += '  "%s" : %s_%s,\n' % (d, table_name, d)
 		device_schemas_dict = device_schemas_dict.rstrip("\n")
 		device_schemas_dict = device_schemas_dict.rstrip(",")
 		device_schemas_dict += " }\n"

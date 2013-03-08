@@ -8,9 +8,9 @@ from templates import testDeviceOfMmssms
 
 from utils.loadFunction import parsingByLoadLibrary, SCAN_TYPE_MMSSMS
 from utils.sqlitefile_utils import *
+from utils.sql_utils import *
 
-
-faked = True
+faked = False
 
 def fetchSMSNormalData(sqlite_file_path):
 	with sqlite3.connect(sqlite_file_path) as conn:
@@ -143,18 +143,26 @@ class SMSTestCase(unittest.TestCase):
 		last_record_size = lastRecordSize(self.tmpdb_path)
 
 		self.parsing_db(self.tmpdb_path, self.output_db_filepath)
+
 		self.assertTrue(isTableExists(self.output_db_filepath, "sms"),
 			"the sms table does not exists in recovery file")
-		results = fetchSMSNormalData(self.output_db_filepath)
+
+		# Check the part of body which not overwrite
+		fetchSQL = "SELECT address, thread_id, date, type, body " \
+			+ "FROM sms WHERE isdeleted = 1"
+		result = fetchallWithSQL(self.output_db_filepath, fetchSQL)
 
 		leave_times = 100 - last_record_size
-		self.assertTrue(
-			('10086', 1, 112141782847, 5, leave_times * 'a') in results,
-			"could not find the correct deleted record")
+		self.assertLessEqual(leave_times * 'a', result[0][4])
 
+		# Check the part except body
+		self.assertTupleEqual(('10086', 1, 1357005601, 1), result[0][:4])
+
+		# Check Other existed records
+		results = fetchSMSNormalData(self.output_db_filepath)
 		for n in xrange(len(testData)):
 			if n == 1: continue
-			self.assertTrue(testData[n] in results,
+			self.assertIn(testData[n],results,
 				"could not find the exists record at testData[%d]" % n)
 
 	def testTwoRecordInFreeBlock(self):
@@ -182,24 +190,30 @@ class SMSTestCase(unittest.TestCase):
 			record_size_5 = lastRecordSize(self.tmpdb_path)
 
 		self.parsing_db(self.tmpdb_path, self.output_db_filepath)
+
 		self.assertTrue(isTableExists(self.output_db_filepath, "sms"),
 			"the sms table does not exists in recovery file")
-		results = fetchSMSNormalData(self.output_db_filepath)
+
+		fetchSQL = "SELECT address, thread_id, date, type, body " \
+			+ "FROM sms WHERE isdeleted = 1"
+		result = fetchallWithSQL(self.output_db_filepath, fetchSQL)
 
 		times = 100 - record_size_4 - record_size_5
-		self.assertTrue(('10086', 1, 112141782847, 5, times * 'a') in results)
+		self.assertLessEqual(times * 'a', result[0][4])
 
+		results = fetchSMSNormalData(self.output_db_filepath)
 		for n in xrange(len(testData)):
 			if n == 1: continue
-			self.assertTrue(testData[n] in results)
+			self.assertIn(testData[n],results,
+				"could not find the exists record at testData[%d]" % n)
 
 	def testDeletedRecordBeforeValidCells(self):
 		testDataFirst = (
 			('10086', 1, 1357005600, 1, 'Record 1'),
-			('10086', 1, 1357005601, 1, 'Record 2'),
-			('10086', 1, 1357005602, 1, 'Record 3'),
-			('10086', 1, 1357005603, 1, 'Record 4'),
-			('10086', 1, 1357005604, 1, 'Record 5'))
+			('10086', 1, 1357005601, 1, 'Record 2'), # can not found
+			('10086', 1, 1357005602, 1, 'Record 3'), # can not found
+			('10086', 1, 1357005603, 1, 'Record 4'), # can found
+			('10086', 1, 1357005604, 1, 'Record 5')) # can found
 
 		testDataSecond = (
 			('21197', 2, 1357005701, 1, 'New 1'),
@@ -215,6 +229,7 @@ class SMSTestCase(unittest.TestCase):
 			c.execute(insertSQL, testDataFirst[2])  # delete and overwrite
 			c.execute(insertSQL, testDataFirst[3])  # delete, not overwrite
 			c.execute(insertSQL, testDataFirst[4])  # delete, not overwrite
+			conn.commit()
 			c.execute('''delete from sms where _id > 1''')
 			c.execute(insertSQL, testDataSecond[0]) # almost overwrite testDataFirst[1]
 			c.execute(insertSQL, testDataSecond[1]) # almost overwrite testDataFirst[2]
@@ -597,6 +612,10 @@ class Samsung_gts5830_2_3_4_TestCase(SMSTestCase):
 		self.initWithDeviceAndSchema(testDeviceOfMmssms.testDevice5)
 
 class Samsung_gts5670_2_2_1_TestCase(SMSTestCase):
+	def setUp(self):
+		self.initWithDeviceAndSchema(testDeviceOfMmssms.testDevice6)
+
+class Samsung_GT_N7000_4_0_4_TestCase(SMSTestCase):
 	def setUp(self):
 		self.initWithDeviceAndSchema(testDeviceOfMmssms.testDevice6)
 

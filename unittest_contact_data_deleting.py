@@ -79,7 +79,7 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 	def fetchallWithSQL(self, db_file, sql):
 		with sqlite3.connect(db_file) as conn:
 			curs = conn.cursor()
-			conn.text_factory = lambda x: unicode(x, "UTF-8", "ignore")
+			conn.text_factory = lambda x: unicode(x, "UTF-8", "replace")
 			curs.execute(sql)
 			return curs.fetchall()
 
@@ -102,6 +102,7 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 		self.backupDatabaseBeforDeleting()
 		self.deleteRecordWithID(deleteRecordID)
 		self.parsingDataTableByLoadLibrary()
+		self.assertTrue(isTableExists(self.output_db_file, "data"))
 		self.checkResultWithTestDataNum(testData, deleteRecordID-1)
 
 	def testFullCols(self):
@@ -125,6 +126,7 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 		self.backupDatabaseBeforDeleting()
 		self.deleteRecordWithID(deleteRecordID)
 		self.parsingDataTableByLoadLibrary()
+		self.assertTrue(isTableExists(self.output_db_file, "data"))
 
 		querySQL = "SELECT " + full_cols + " FROM data"
 		results = self.fetchallWithSQL(self.output_db_file, querySQL)
@@ -142,6 +144,7 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 		self.backupDatabaseBeforDeleting()
 		self.deleteRecordWithID(2)
 		self.parsingDataTableByLoadLibrary()
+		self.assertTrue(isTableExists(self.output_db_file, "data"))
 		results = self.fetchallDefault(self.output_db_file)
 		self.assertIn(testData[1], results)
 
@@ -164,6 +167,7 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 		self.deleteRecordWithID(7)  # group
 		self.deleteRecordWithID(8)  # phone 2
 		self.parsingDataTableByLoadLibrary()
+		self.assertTrue(isTableExists(self.output_db_file, "data"))
 		results = self.fetchallDefault(self.output_db_file)
 		for n in xrange(len(testData)):
 			if testData[n][1] == 2:
@@ -191,6 +195,7 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 		 						" OR raw_contact_id = 3"
 		self.deleteRecordWithSQL(deleteSQL)
 		self.parsingDataTableByLoadLibrary()
+		self.assertTrue(isTableExists(self.output_db_file, "data"))
 		results = self.fetchallDefault(self.output_db_file)
 		for n in xrange(len(testData)):
 			if testData[n][1] == 2 or testData[n][1] == 3:
@@ -215,6 +220,7 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 		deleteSQL = "DELETE FROM data WHERE raw_contact_id = 2"
 		self.deleteRecordWithSQL(deleteSQL)
 		self.parsingDataTableByLoadLibrary()
+		self.assertTrue(isTableExists(self.output_db_file, "data"))
 		results = self.fetchallDefault(self.output_db_file)
 		for n in xrange(len(testData)):
 			if testData[n][1] == 2:
@@ -241,6 +247,7 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 		deleteSQL = "DELETE FROM data"
 		self.deleteRecordWithSQL(deleteSQL)
 		self.parsingDataTableByLoadLibrary()
+		self.assertTrue(isTableExists(self.output_db_file, "data"))
 		results = self.fetchallDefault(self.output_db_file)
 		for n in xrange(len(testData)):
 			self.assertIn(testData[n], results)
@@ -265,6 +272,7 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 			self.deleteRecordWithID(n)
 
 		self.parsingDataTableByLoadLibrary()
+		self.assertTrue(isTableExists(self.output_db_file, "data"))
 
 		for n in xrange(2, len(testData)+1):
 			self.checkResultWithTestDataNum(testData, n-1)
@@ -287,6 +295,7 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 			self.deleteRecordWithID(n)
 
 		self.parsingDataTableByLoadLibrary()
+		self.assertTrue(isTableExists(self.output_db_file, "data"))
 
 		for n in xrange(2, len(testData)+1, 2):
 			self.checkResultWithTestDataNum(testData, n-1)
@@ -308,6 +317,7 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 			self.deleteRecordWithID(n)
 
 		self.parsingDataTableByLoadLibrary()
+		self.assertTrue(isTableExists(self.output_db_file, "data"))
 
 		# Find existed records id: 1,3,5,7,...
 		results = self.fetchallDefault(self.output_db_file)
@@ -315,12 +325,12 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 			self.assertIn(src_db_results[n], results)
 
 		# Find deleted records id: 2,4,6,8,...
-		not_found_count = 0
+		not_found_count = 0.0
 		for n in xrange(1, len(testData), 2):
 			if src_db_results[n] not in results:
 				not_found_count += 1
-			self.assertTrue(not_found_count/data_length < 0.1,
-				"not found records greater than 10%")
+		not_found_radio = not_found_count/(data_length-4)
+		self.assertLessEqual(not_found_radio, 0.1)
 
 	def testRandomLettersDigitsAndWhiteSpaceString10(self):
 		self.tmplWithRandomString(10)
@@ -349,6 +359,7 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 			self.deleteRecordWithID(n)
 
 		self.parsingDataTableByLoadLibrary()
+		self.assertTrue(isTableExists(self.output_db_file, "data"))
 
 		results = self.fetchallDefault(self.output_db_file)
 		# Find existed records id: 1,3,5,7,...
@@ -356,12 +367,12 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 			self.assertIn(testData[n], results)
 
 		# Find deleted records id : 2,4,6,8,...
-		not_found_count = 0
+		not_found_count = 0.0
 		for n in xrange(1, len(testData), 2):
 			if src_db_results[n] not in results:
 				not_found_count += 1
-			self.assertTrue(not_found_count/data_length < 0.1,
-				"not found records greater than 10%")
+		not_found_radio = not_found_count/(data_length-4)
+		self.assertLessEqual(not_found_radio, 0.1)
 
 	def testRandomPrintableString10(self):
 		self.tmplWithRandomString2(10)
@@ -390,6 +401,7 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 		self.backupDatabaseBeforDeleting()
 		self.deleteRecordWithID(2)
 		self.parsingDataTableByLoadLibrary()
+		self.assertTrue(isTableExists(self.output_db_file, "data"))
 
 		fetchSQL = "SELECT %s,data15 FROM data" % default_cols
 		results = self.fetchallWithSQL(self.output_db_file, fetchSQL)
@@ -413,6 +425,7 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 		self.backupDatabaseBeforDeleting()
 
 		self.parsingDataTableByLoadLibrary()
+		self.assertTrue(isTableExists(self.output_db_file, "data"))
 
 		fetchSQL = "SELECT data1 FROM data WHERE _id = 2"
 		result = self.fetchallWithSQL(self.output_db_file, fetchSQL)
@@ -446,6 +459,7 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 		self.backupDatabaseBeforDeleting()
 
 		self.parsingDataTableByLoadLibrary()
+		self.assertTrue(isTableExists(self.output_db_file, "data"))
 
 		fetchSQL = "SELECT data1 FROM data WHERE isdeleted = 1"
 		result = self.fetchallWithSQL(self.output_db_file, fetchSQL)
@@ -459,15 +473,15 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 		for n in xrange(len(testData2)):
 			self.assertIn(testData2[n], existed_results)
 
-	def testInsert1200AndRandomDelete500(self):
+	def testInsert700AndRandomDelete300(self):
 		photoTestData = []
 		with open("./res/pic.jpg") as f:
 			data15 = buffer(f.read())
-		for n in xrange(200):
+		for n in xrange(100):
 			photoTestData.append((6, random.randint(1,200),None, None, None, data15))
 
 		testData = []
-		for n in xrange(500):
+		for n in xrange(300):
 			# Name or Full data1 to data3
 			testData.append((random.randint(1,15),
 											 random.randint(1,200),
@@ -492,15 +506,16 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 
 		id_list = [x for x in xrange(len(testData))]
 		random.shuffle(id_list)
-		for n in id_list[:500]:
+		for n in id_list[:300]:
 			self.deleteRecordWithID(id_list[n])
 
 		self.parsingDataTableByLoadLibrary()
+		self.assertTrue(isTableExists(self.output_db_file, "data"))
 
 		fetchSQL = "SELECT %s,data15 FROM data" % default_cols
 		results = self.fetchallWithSQL(self.output_db_file, fetchSQL)
 
-		not_found_count = 0
+		not_found_count = 0.0
 		for n in xrange(len(testData)):
 			if testData[n] not in results:
 				not_found_count += 1
@@ -514,11 +529,11 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 		photoTestData = []
 		with open("./res/pic.jpg") as f:
 			data15 = buffer(f.read())
-		for n in xrange(200):
+		for n in xrange(100):
 			photoTestData.append((6, random.randint(1,200),None, None, None, data15))
 
 		testData = []
-		for n in xrange(500):
+		for n in xrange(300):
 			# Name or Full data1 to data3
 			testData.append((random.randint(1,15),
 											 random.randint(1,200),
@@ -549,11 +564,12 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 			self.deleteRecordWithSQL(deleteSQL)
 
 		self.parsingDataTableByLoadLibrary()
+		self.assertTrue(isTableExists(self.output_db_file, "data"))
 
 		fetchSQL = "SELECT %s,data15 FROM data" % default_cols
 		results = self.fetchallWithSQL(self.output_db_file, fetchSQL)
 
-		not_found_count = 0
+		not_found_count = 0.0
 		for n in xrange(len(testData)):
 			if testData[n] not in results:
 				not_found_count += 1
@@ -592,6 +608,7 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 			self.deleteRecordWithID(n)
 
 		self.parsingDataTableByLoadLibrary()
+		self.assertTrue(isTableExists(self.output_db_file, "data"))
 
 		results = self.fetchallDefault(self.output_db_file)
 
@@ -631,6 +648,7 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 		self.deleteRecordWithSQL(deleteSQL)
 
 		self.parsingDataTableByLoadLibrary()
+		self.assertTrue(isTableExists(self.output_db_file, "data"))
 
 		results = self.fetchallDefault(self.output_db_file)
 
@@ -643,6 +661,127 @@ class ContactsDataTableDeletedTestCase(unittest.TestCase):
 					+ "records per page is about: %d \n" % record_nums_per_page \
 					+ "delete all records \n" \
 					+ "find records from %d to %d" % (found_start, length))
+
+	def testDeletedRecordBeforeValidCells(self):
+		testData1 = (
+			(6, 1, "Tom Smith", "Tom", "Smith"),
+			(6, 2, "Steven Gates", "Steven", "Gates"), #del, overwrite, can not found
+			(6, 3, "Jack Johnao", "Jack", "Johnao"),   #del, overwrite, can not found
+			(6, 4, "Hellen Walls", "Hellen", "Walls"))
+
+		testData2 = (
+			(6, 5, "Mary Larry", "Mary", "Larry"),
+			(6, 6, "Ken Kaven", "Ken", "Kaven"))
+
+		self.insertNormalTestData(testData1)
+		self.deleteRecordWithID(2)
+		self.deleteRecordWithID(3)
+		self.deleteRecordWithID(4)
+		self.insertNormalTestData(testData2)
+
+		self.parsingDataTableByLoadLibrary()
+		self.assertTrue(isTableExists(self.output_db_file, "data"))
+
+		results = self.fetchallDefault(self.output_db_file)
+
+		self.assertIn(testData1[0], results)
+		self.assertIn(testData1[3], results)
+		self.assertIn(testData2[0], results)
+		self.assertIn(testData2[1], results)
+
+# Extend the Device Test Case
+class samsung_GT_I9001_2_3_6_TestCase(ContactsDataTableDeletedTestCase):
+	def setUp(self):
+		self.initWithDeiveAndSchema(testDeviceOfContacts.testDevice2)
+
+class samsung_GT_i897or9000_2_3_4_TestCase(ContactsDataTableDeletedTestCase):
+	def setUp(self):
+		self.initWithDeiveAndSchema(testDeviceOfContacts.testDevice3)
+
+class samsung_gt_i9003_2_3_5_TestCase(ContactsDataTableDeletedTestCase):
+	def setUp(self):
+		self.initWithDeiveAndSchema(testDeviceOfContacts.testDevice4)
+
+class samsung_gt_i9300_4_1_2_TestCase(ContactsDataTableDeletedTestCase):
+	def setUp(self):
+		self.initWithDeiveAndSchema(testDeviceOfContacts.testDevice5)
+
+class samsung_gt_n7000_4_0_3_TestCase(ContactsDataTableDeletedTestCase):
+	def setUp(self):
+		self.initWithDeiveAndSchema(testDeviceOfContacts.testDevice6)
+
+class samsung_GT_N7000_4_0_4_TestCase(ContactsDataTableDeletedTestCase):
+	def setUp(self):
+		self.initWithDeiveAndSchema(testDeviceOfContacts.testDevice7)
+
+class samsung_gt_n7100_4_1_1_TestCase(ContactsDataTableDeletedTestCase):
+	def setUp(self):
+		self.initWithDeiveAndSchema(testDeviceOfContacts.testDevice8)
+
+class samsung_GT_N8000_4_1_1_TestCase(ContactsDataTableDeletedTestCase):
+	def setUp(self):
+		self.initWithDeiveAndSchema(testDeviceOfContacts.testDevice9)
+
+class samsung_P5100_4_0_3_TestCase(ContactsDataTableDeletedTestCase):
+	def setUp(self):
+		self.initWithDeiveAndSchema(testDeviceOfContacts.testDevice10)
+
+class samsung_SCH_I909_2_2_2_TestCase(ContactsDataTableDeletedTestCase):
+	def setUp(self):
+		self.initWithDeiveAndSchema(testDeviceOfContacts.testDevice11)
+
+class samsung_SGH_I927_4_0_4_TestCase(ContactsDataTableDeletedTestCase):
+	def setUp(self):
+		self.initWithDeiveAndSchema(testDeviceOfContacts.testDevice12)
+
+class Samsung_SGH_I997_2_2_1_TestCase(ContactsDataTableDeletedTestCase):
+	def setUp(self):
+		self.initWithDeiveAndSchema(testDeviceOfContacts.testDevice13)
+
+class samsung_SGH_T759_2_3_3_TestCase(ContactsDataTableDeletedTestCase):
+	def setUp(self):
+		self.initWithDeiveAndSchema(testDeviceOfContacts.testDevice14)
+
+class samsung_SPH_D710_4_0_4_TestCase(ContactsDataTableDeletedTestCase):
+	def setUp(self):
+		self.initWithDeiveAndSchema(testDeviceOfContacts.testDevice15)
+
+class samsung_GT_9100_4_0_4_TestCase(ContactsDataTableDeletedTestCase):
+	def setUp(self):
+		self.initWithDeiveAndSchema(testDeviceOfContacts.testDevice16)
+
+class samsung_GT_9250_4_2_2_TestCase(ContactsDataTableDeletedTestCase):
+	def setUp(self):
+		self.initWithDeiveAndSchema(testDeviceOfContacts.testDevice17)
+
+class samsung_GT_I9000_2_3_4_TestCase(ContactsDataTableDeletedTestCase):
+	def setUp(self):
+		self.initWithDeiveAndSchema(testDeviceOfContacts.testDevice18)
+
+class samsung_GT_I9100G_4_0_4_TestCase(ContactsDataTableDeletedTestCase):
+	def setUp(self):
+		self.initWithDeiveAndSchema(testDeviceOfContacts.testDevice19)
+
+class samsung_GT_N8000_4_0_4TestCase(ContactsDataTableDeletedTestCase):
+	def setUp(self):
+		self.initWithDeiveAndSchema(testDeviceOfContacts.testDevice20)
+
+class samsung_GT_P1000_2_2_1_TestCase(ContactsDataTableDeletedTestCase):
+	def setUp(self):
+		self.initWithDeiveAndSchema(testDeviceOfContacts.testDevice21)
+
+class samsung_GT_P7500_4_0_4_TestCase(ContactsDataTableDeletedTestCase):
+	def setUp(self):
+		self.initWithDeiveAndSchema(testDeviceOfContacts.testDevice22)
+
+class samsung_GT_S5670_2_2_1_TestCase(ContactsDataTableDeletedTestCase):
+	def setUp(self):
+		self.initWithDeiveAndSchema(testDeviceOfContacts.testDevice23)
+
+class samsung_GT_S5830_2_3_4_TestCase(ContactsDataTableDeletedTestCase):
+	def setUp(self):
+		self.initWithDeiveAndSchema(testDeviceOfContacts.testDevice24)
+
 
 
 if __name__ == '__main__':
