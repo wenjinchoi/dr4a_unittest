@@ -1,0 +1,9 @@
+*.pyc
+
+*.db-shm
+
+*.db-wal
+
+.DS_Store
+
+TestResource/.DS_Store
