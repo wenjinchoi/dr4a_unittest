@@ -9,3 +9,7 @@
 TestResource/.DS_Store
 
 *.svn
+
+src_db/
+
+rec_db/

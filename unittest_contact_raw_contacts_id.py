@@ -1,3 +1,7 @@
+# -*- coding: UTF-8 -*-
 
-testOverwriteFreeBlock
-test
+import unittest
+
+class Base(unittest.TestCase):
+	def setUp(self):
+		pass
