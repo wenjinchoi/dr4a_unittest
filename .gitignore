@@ -12,4 +12,9 @@ TestResource/.DS_Store
 
 src_db/
 
+<<<<<<< HEAD
 rec_db/
+=======
+rec_db/
+TestResource/.DS_Store
+>>>>>>> 更新 sqlite3.dll 的两个版本

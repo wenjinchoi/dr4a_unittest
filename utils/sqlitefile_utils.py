@@ -4,6 +4,9 @@ import os
 import sqlite3
 import struct
 
+SQLITE_VERSION_3_6_21 = 0
+SQLITE_VERSION_3_7_15 = 1
+
 def createDB(path, smsSchema, auto_vacuum = 0):
 	if os.path.exists(path):
 		os.remove(path)
@@ -12,6 +15,9 @@ def createDB(path, smsSchema, auto_vacuum = 0):
 		curs.execute('PRAGMA auto_vacuum = %d' % auto_vacuum)
 		curs.execute(smsSchema)
 		conn.commit()
+
+def switch_pysqlite_version(version):
+	pass
 
 def isTableExists(db_file, table_name):
 	with sqlite3.connect(db_file) as conn:
