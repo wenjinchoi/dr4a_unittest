@@ -5,6 +5,8 @@ import shutil
 import sqlite3
 import struct
 
+from sys import modules
+
 SQLITE_VERSION_3_6_21 = 0
 SQLITE_VERSION_3_7_15 = 1
 
@@ -21,13 +23,13 @@ def switch_pysqlite_version(path, version):
 	tmp_path = path
 	if os.path.isfile(tmp_path):
 		tmp_path = os.path.split(tmp_path)[0]
-	if os.path.exists(os.path.join(tmp_path, "sqlite3.dll"):
-
+	if os.path.exists(os.path.join(tmp_path, "sqlite3.dll")):
+		pass
 	if version == SQLITE_VERSION_3_6_21:
-		shutil.copy2("./lib/sqlite3_6_21.dll",
+		shutil.copy2("../lib/sqlite3_6_21.dll",
 								 os.path.join(tmp_path, "sqlite3.dll"))
 	elif version == SQLITE_VERSION_3_7_15:
-		shutil.copy2("./lib/sqlite3_7_15.dll",
+		shutil.copy2("../lib/sqlite3_7_15.dll",
 						 os.path.join(tmp_path, "sqlite3.dll"))
 
 def isTableExists(db_file, table_name):
@@ -83,9 +85,4 @@ def lastRecordSize(sqlite_file):
 
 # test
 if __name__ == '__main__':
-	tmpdb_path = './tmp/example_1.db'
-	print getPageSize(tmpdb_path)
-	page = SmsFirstPage(tmpdb_path)
-	print pageHeader(page)
-	records = recordList(page)
-	print lastSmsRecordSize(tmpdb_path)
+	switch_pysqlite_version(r'C:\Python27\DLLs', SQLITE_VERSION_3_7_15)

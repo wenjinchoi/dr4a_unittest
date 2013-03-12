@@ -375,6 +375,7 @@ class SMSTestCase(unittest.TestCase):
 	def testAddressWithKorean(self):
 		self.templateTestAddressWithMultiLanguageString('한국어')
 
+	@unittest.skip("not prepared.")
 	def testAddressWithOverflow(self):
 		# TODO: need to finish
 		self.assertTrue(False)
@@ -574,6 +575,7 @@ class SMSTestCase(unittest.TestCase):
 	def testBodyWithKorean(self):
 		self.templateTestBodyMultiLanguage('한국어')
 
+	@unittest.skip("not prepared")
 	def testOtherValue(self):
 		pass
 
@@ -631,6 +633,7 @@ class Samsung_gt_i9300_4_1_2_TestCase(SMSTestCase):
 class Samsung_gt_n7100_4_1_1_TestCase(SMSTestCase):
 	def setUp(self):
 		self.initWithDeviceAndSchema(testDeviceOfMmssms.testDevice9)
+
 
 if __name__ == '__main__':
 	unittest.main()
