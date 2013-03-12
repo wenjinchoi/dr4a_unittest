@@ -99,110 +99,714 @@ threadSchema9 = """CREATE TABLE threads (_id INTEGER PRIMARY KEY,
 	has_attachment INTEGER DEFAULT 0,unread_count INTEGER DEFAULT 0)"""
 
 
-sms_update_thread_on_insert = '''CREATE TRIGGER sms_update_thread_on_insert
-AFTER INSERT ON sms BEGIN  UPDATE threads
-SET date = (strftime('%s','now') * 1000),
-snippet = new.body,
-snippet_cs = 0  WHERE threads._id = new.thread_id;
-UPDATE threads SET message_count =
-(SELECT COUNT(sms._id) FROM sms LEFT JOIN threads ON threads._id = thread_id
-WHERE thread_id = new.thread_id AND sms.type != 3),
-unread_count =
-(SELECT count(*) FROM sms LEFT JOIN threads
-ON threads._id = thread_id
-WHERE thread_id = new.thread_id
-AND sms.read = 0 AND sms.type != 3);
-UPDATE threads SET read = CASE (SELECT COUNT(*)
-FROM sms
-WHERE read = 0
-AND thread_id = threads._id)
-WHEN 0 THEN 1      ELSE 0    END
-WHERE threads._id = new.thread_id; END;'''
 
-index = "CREATE INDEX typeThreadIdIndex ON sms (type, thread_id)"
+# htc_2_2_1
+sms_htc_2_2_1 = '''CREATE TABLE sms
+(_id INTEGER PRIMARY KEY,
+thread_id INTEGER,
+toa INTEGER DEFAULT 0,
+address TEXT,
+person INTEGER,
+date INTEGER,
+protocol INTEGER,
+read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,
+type INTEGER,
+reply_path_present INTEGER,
+subject TEXT,
+body TEXT,
+sc_toa INTEGER DEFAULT 0,
+report_date INTEGER,
+service_center TEXT,
+locked INTEGER DEFAULT 0,
+index_on_sim TEXT,
+callback_number TEXT,
+priority INTEGER DEFAULT 0,
+htc_category INTEGER DEFAULT 0,
+cs_timestamp LONG DEFAULT -1,
+cs_id TEXT,
+cs_synced INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,
+seen INTEGER DEFAULT 0,
+is_cdma_format INTEGER DEFAULT 1,
+is_evdo INTEGER DEFAULT 0 );
+'''
 
-sms_update_thread_on_insert_ori = '''CREATE TRIGGER sms_update_thread_on_insert
-AFTER INSERT ON sms BEGIN  UPDATE threads
-SET    date = (strftime('%s','now') * 1000),
-snippet = new.body,
-snippet_cs = 0  WHERE threads._id = new.thread_id;
-UPDATE threads SET message_count =
-(SELECT COUNT(sms._id) FROM sms LEFT JOIN threads
-ON threads._id = thread_id
-WHERE thread_id = new.thread_id
-AND sms.type != 3) +
-(SELECT COUNT(pdu._id) FROM pdu LEFT JOIN threads
-ON threads._id = thread_id
-WHERE thread_id = new.thread_id
-AND (m_type=132 OR m_type=130 OR m_type=128)
-AND msg_box != 3) 		,
-unread_count =
-(SELECT count(*) FROM sms LEFT JOIN threads
-ON threads._id = thread_id
-WHERE thread_id = new.thread_id
-AND sms.read = 0 AND sms.type != 3) +
-(SELECT count(*) FROM pdu LEFT JOIN threads
-ON threads._id = thread_id
-WHERE thread_id = new.thread_id
-AND pdu.read = 0
-AND (m_type = 128 OR m_type = 132 OR m_type = 130)
-AND msg_box != 3)   WHERE threads._id = new.thread_id;
-UPDATE threads SET read =     CASE (SELECT COUNT(*)
-FROM sms
-WHERE read = 0
-AND thread_id = threads._id)
-WHEN 0 THEN 1      ELSE 0    END
-WHERE threads._id = new.thread_id; END;'''
+#
+sms_ = '''CREATE TABLE sms
+(_id INTEGER PRIMARY KEY AUTOINCREMENT,
+thread_id INTEGER,
+address TEXT,
+person INTEGER,
+date INTEGER,
+protocol INTEGER,
+read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,
+type INTEGER,
+reply_path_present INTEGER,
+subject TEXT,
+body TEXT,
+service_center TEXT,
+locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,
+seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0,
+delivery_date INTEGER);
+'''
 
+# samsung_GT_i897or9000_2_3_4
+sms_samsung_GT_i897or9000_2_3_4 = '''CREATE TABLE sms
+(_id INTEGER PRIMARY KEY AUTOINCREMENT,
+thread_id INTEGER,
+address TEXT,
+person INTEGER,
+date INTEGER,
+protocol INTEGER,
+read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,
+type INTEGER,
+reply_path_present INTEGER,
+subject TEXT,
+body TEXT,
+service_center TEXT,
+locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,
+seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0);
+'''
 
-samsung_gts5570_2_2_1_sms = """CREATE TABLE sms (
-_id INTEGER PRIMARY KEY AUTOINCREMENT,thread_id INTEGER,address TEXT,
-person INTEGER,date INTEGER,protocol INTEGER,read INTEGER DEFAULT 0,
-status INTEGER DEFAULT -1,type INTEGER,reply_path_present INTEGER,
-subject TEXT,body TEXT,service_center TEXT,locked INTEGER DEFAULT 0,
-error_code INTEGER DEFAULT 0,seen INTEGER DEFAULT 0,
-deletable INTEGER DEFAULT 0);"""
+# samsung_gt_i9001_2_3_6
+sms_samsung_gt_i9001_2_3_6 = '''CREATE TABLE sms
+(_id INTEGER PRIMARY KEY AUTOINCREMENT,
+thread_id INTEGER,
+address TEXT,
+person INTEGER,
+date INTEGER,
+protocol INTEGER,
+read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,
+type INTEGER,
+reply_path_present INTEGER,
+subject TEXT,
+body TEXT,
+service_center TEXT,
+locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,
+seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0,
+delivery_date INTEGER);
+'''
 
-samsung_gti9000_2_3_4_sms = """CREATE TABLE sms (
-_id INTEGER PRIMARY KEY AUTOINCREMENT,thread_id INTEGER,address TEXT,
-person INTEGER,date INTEGER,protocol INTEGER,read INTEGER DEFAULT 0,
-status INTEGER DEFAULT -1,type INTEGER,reply_path_present INTEGER,
-subject TEXT,body TEXT,service_center TEXT,locked INTEGER DEFAULT 0,
-error_code INTEGER DEFAULT 0,seen INTEGER DEFAULT 0,
-deletable INTEGER DEFAULT 0);"""
+# samsung_gt_i9003_2_3_5
+sms_samsung_gt_i9003_2_3_5 = '''CREATE TABLE sms
+(_id INTEGER PRIMARY KEY AUTOINCREMENT,
+thread_id INTEGER,
+address TEXT,
+person INTEGER,
+date INTEGER,
+protocol INTEGER,
+read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,
+type INTEGER,
+reply_path_present INTEGER,
+subject TEXT,
+body TEXT,
+service_center TEXT,
+locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,
+seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0);
+'''
 
-samsung_gtn7000_4_0_4_sms = """CREATE TABLE sms (
-_id INTEGER PRIMARY KEY AUTOINCREMENT,thread_id INTEGER,address TEXT,
-person INTEGER,date INTEGER,date_sent INTEGER DEFAULT 0,protocol INTEGER,
-read INTEGER DEFAULT 0,status INTEGER DEFAULT -1,type INTEGER,
-reply_path_present INTEGER,subject TEXT,body TEXT,service_center TEXT,
-locked INTEGER DEFAULT 0,error_code INTEGER DEFAULT 0,seen INTEGER DEFAULT 0,
-deletable INTEGER DEFAULT 0,hidden INTEGER DEFAULT 0,group_id INTEGER,
-group_type INTEGER,delivery_date INTEGER, reserved INTEGER DEFAULT 0,
-pri INTEGER DEFAULT 0);"""
+# samsung_gt_i9300_4_1_2
+sms_samsung_gt_i9300_4_1_2 = '''CREATE TABLE sms
+(_id INTEGER PRIMARY KEY AUTOINCREMENT,
+thread_id INTEGER,
+address TEXT,
+person INTEGER,
+date INTEGER,
+date_sent INTEGER DEFAULT 0,
+protocol INTEGER,
+read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,
+type INTEGER,
+reply_path_present INTEGER,
+subject TEXT,
+body TEXT,
+service_center TEXT,
+locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,
+seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0,
+hidden INTEGER DEFAULT 0,
+group_id INTEGER,
+group_type INTEGER,
+delivery_date INTEGER,
+app_id INTEGER DEFAULT 0,
+msg_id INTEGER DEFAULT 0,
+callback_number TEXT,
+reserved INTEGER DEFAULT 0,
+pri INTEGER DEFAULT 0,
+teleservice_id INTEGER DEFAULT 0,
+link_url TEXT);
+'''
 
-samsung_sghi997_2_2_1_sms = """CREATE TABLE sms (
-_id INTEGER PRIMARY KEY AUTOINCREMENT,thread_id INTEGER,address TEXT,
-person INTEGER,date INTEGER,protocol INTEGER,read INTEGER DEFAULT 0,
-status INTEGER DEFAULT -1,type INTEGER,reply_path_present INTEGER,
-subject TEXT,body TEXT,service_center TEXT,locked INTEGER DEFAULT 0,
-error_code INTEGER DEFAULT 0,seen INTEGER DEFAULT 0,
-deletable INTEGER DEFAULT 0);"""
+# samsung_gt_n7000_4_0_3
+sms_samsung_gt_n7000_4_0_3 = '''CREATE TABLE sms
+(_id INTEGER PRIMARY KEY AUTOINCREMENT,
+thread_id INTEGER,
+address TEXT,
+person INTEGER,
+date INTEGER,
+date_sent INTEGER DEFAULT 0,
+protocol INTEGER,
+read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,
+type INTEGER,
+reply_path_present INTEGER,
+subject TEXT,
+body TEXT,
+service_center TEXT,
+locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,
+seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0,
+hidden INTEGER DEFAULT 0,
+group_id INTEGER,
+group_type INTEGER,
+delivery_date INTEGER);
+'''
 
-samsung_gts5830_2_3_4_sms = """CREATE TABLE sms (
-_id INTEGER PRIMARY KEY AUTOINCREMENT,thread_id INTEGER,address TEXT,
-person INTEGER,date INTEGER,protocol INTEGER,read INTEGER DEFAULT 0,
-status INTEGER DEFAULT -1,type INTEGER,reply_path_present INTEGER,
-subject TEXT,body TEXT,service_center TEXT,locked INTEGER DEFAULT 0,
-error_code INTEGER DEFAULT 0,seen INTEGER DEFAULT 0,
-deletable INTEGER DEFAULT 0,delivery_date INTEGER);"""
+# samsung_GT_N7000_4_0_4
+sms_samsung_GT_N7000_4_0_4 = '''CREATE TABLE sms
+(_id INTEGER PRIMARY KEY AUTOINCREMENT,
+thread_id INTEGER,
+address TEXT,
+person INTEGER,
+date INTEGER,
+date_sent INTEGER DEFAULT 0,
+protocol INTEGER,
+read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,
+type INTEGER,
+reply_path_present INTEGER,
+subject TEXT,
+body TEXT,
+service_center TEXT,
+locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,
+seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0,
+hidden INTEGER DEFAULT 0,
+group_id INTEGER,
+group_type INTEGER,
+delivery_date INTEGER,
+reserved INTEGER DEFAULT 0,
+pri INTEGER DEFAULT 0);
+'''
 
-samsung_gts5670_2_2_1_sms = """CREATE TABLE sms (
-_id INTEGER PRIMARY KEY AUTOINCREMENT,thread_id INTEGER,address TEXT,
-person INTEGER,date INTEGER,protocol INTEGER,read INTEGER DEFAULT 0,
-status INTEGER DEFAULT -1,type INTEGER,reply_path_present INTEGER,
-subject TEXT,body TEXT,service_center TEXT,locked INTEGER DEFAULT 0,
-error_code INTEGER DEFAULT 0,seen INTEGER DEFAULT 0,
-deletable INTEGER DEFAULT 0);"""
+# samsung_gt_n7100_4_1_1
+sms_samsung_gt_n7100_4_1_1 = '''CREATE TABLE sms
+(_id INTEGER PRIMARY KEY AUTOINCREMENT,
+thread_id INTEGER,
+address TEXT,
+person INTEGER,
+date INTEGER,
+date_sent INTEGER DEFAULT 0,
+protocol INTEGER,
+read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,
+type INTEGER,
+reply_path_present INTEGER,
+subject TEXT,
+body TEXT,
+service_center TEXT,
+locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,
+seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0,
+hidden INTEGER DEFAULT 0,
+group_id INTEGER,
+group_type INTEGER,
+delivery_date INTEGER,
+app_id INTEGER DEFAULT 0,
+msg_id INTEGER DEFAULT 0,
+callback_number TEXT,
+reserved INTEGER DEFAULT 0,
+pri INTEGER DEFAULT 0,
+teleservice_id INTEGER DEFAULT 0,
+link_url TEXT);
+'''
 
+# samsung_gt_n8000_4_1_1
+sms_samsung_gt_n8000_4_1_1 = '''CREATE TABLE sms
+(_id INTEGER PRIMARY KEY AUTOINCREMENT,
+thread_id INTEGER,
+address TEXT,
+person INTEGER,
+date INTEGER,
+date_sent INTEGER DEFAULT 0,
+protocol INTEGER,
+read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,
+type INTEGER,
+reply_path_present INTEGER,
+subject TEXT,
+body TEXT,
+service_center TEXT,
+locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,
+seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0,
+hidden INTEGER DEFAULT 0,
+group_id INTEGER,
+group_type INTEGER,
+delivery_date INTEGER,
+app_id INTEGER DEFAULT 0,
+msg_id INTEGER DEFAULT 0,
+callback_number TEXT,
+reserved INTEGER DEFAULT 0,
+pri INTEGER DEFAULT 0,
+teleservice_id INTEGER DEFAULT 0,
+link_url TEXT);
+'''
+
+# samsung_gt_p1000_2_2_1
+sms_samsung_gt_p1000_2_2_1 = '''CREATE TABLE sms
+(_id INTEGER PRIMARY KEY AUTOINCREMENT,
+thread_id INTEGER,
+address TEXT,
+person INTEGER,
+date INTEGER,
+protocol INTEGER,
+read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,
+type INTEGER,
+reply_path_present INTEGER,
+subject TEXT,
+body TEXT,
+service_center TEXT,
+locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,
+seen INTEGER DEFAULT 0);
+'''
+
+# samsung_gt_p7500_4_0_4
+sms_samsung_gt_p7500_4_0_4 = '''CREATE TABLE sms
+(_id INTEGER PRIMARY KEY AUTOINCREMENT,
+thread_id INTEGER,
+address TEXT,
+person INTEGER,
+date INTEGER,
+protocol INTEGER,
+read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,
+type INTEGER,
+reply_path_present INTEGER,
+subject TEXT,
+body TEXT,
+service_center TEXT,
+locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,
+seen INTEGER DEFAULT 0,
+hidden INTEGER DEFAULT 0,
+group_id INTEGER,
+group_type INTEGER,
+date_sent INTEGER DEFAULT 0,
+delivery_date INTEGER,
+app_id INTEGER DEFAULT 0,
+msg_id INTEGER DEFAULT 0,
+callback_number TEXT,
+deletable INTEGER DEFAULT 0,
+priority INTEGER DEFAULT 0,
+reserved INTEGER DEFAULT 0,
+teleservice_id INTEGER DEFAULT 0,
+link_url TEXT);
+'''
+
+# samsung_gt_s5570_2_2_1
+sms_samsung_gt_s5570_2_2_1 = '''CREATE TABLE sms
+(_id INTEGER PRIMARY KEY AUTOINCREMENT,
+thread_id INTEGER,
+address TEXT,
+person INTEGER,
+date INTEGER,
+protocol INTEGER,
+read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,
+type INTEGER,
+reply_path_present INTEGER,
+subject TEXT,
+body TEXT,
+service_center TEXT,
+locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,
+seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0);
+'''
+
+# samsung_P1500_4_0_3
+sms_samsung_P1500_4_0_3 = '''CREATE TABLE sms
+(_id INTEGER PRIMARY KEY AUTOINCREMENT,
+thread_id INTEGER,
+address TEXT,
+person INTEGER,
+date INTEGER,
+date_sent INTEGER DEFAULT 0,
+protocol INTEGER,
+read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,
+type INTEGER,
+reply_path_present INTEGER,
+subject TEXT,
+body TEXT,
+service_center TEXT,
+locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,
+seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0,
+hidden INTEGER DEFAULT 0,
+group_id INTEGER,
+group_type INTEGER,
+delivery_date INTEGER,
+app_id INTEGER DEFAULT 0,
+msg_id INTEGER DEFAULT 0,
+callback_number TEXT,
+reserved INTEGER DEFAULT 0);
+'''
+
+# samsung_s5670_2_2_1
+sms_samsung_s5670_2_2_1 = '''CREATE TABLE sms
+(_id INTEGER PRIMARY KEY AUTOINCREMENT,
+thread_id INTEGER,
+address TEXT,
+person INTEGER,
+date INTEGER,
+protocol INTEGER,
+read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,
+type INTEGER,
+reply_path_present INTEGER,
+subject TEXT,
+body TEXT,
+service_center TEXT,
+locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,
+seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0);
+'''
+
+# samsung_s5830_2_3_4
+sms_samsung_s5830_2_3_4 = '''CREATE TABLE sms
+(_id INTEGER PRIMARY KEY AUTOINCREMENT,
+thread_id INTEGER,
+address TEXT,
+person INTEGER,
+date INTEGER,
+protocol INTEGER,
+read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,
+type INTEGER,
+reply_path_present INTEGER,
+subject TEXT,
+body TEXT,
+service_center TEXT,
+locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,
+seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0,
+delivery_date INTEGER);
+'''
+
+# samsung_SCH_I909_2_2_2
+sms_samsung_SCH_I909_2_2_2 = '''CREATE TABLE sms
+(_id INTEGER PRIMARY KEY AUTOINCREMENT,
+thread_id INTEGER,
+address TEXT,
+person INTEGER,
+date INTEGER,
+protocol INTEGER,
+read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,
+type INTEGER,
+reply_path_present INTEGER,
+subject TEXT,
+body TEXT,
+service_center TEXT,
+locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,
+seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0,
+band INTEGER DEFAULT -1);
+'''
+
+# samsung_sgh_i927_4_0_4
+sms_samsung_sgh_i927_4_0_4 = '''CREATE TABLE sms
+(_id INTEGER PRIMARY KEY AUTOINCREMENT,
+thread_id INTEGER,
+address TEXT,
+person INTEGER,
+date INTEGER,
+date_sent INTEGER DEFAULT 0,
+protocol INTEGER,
+read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,
+type INTEGER,
+reply_path_present INTEGER,
+subject TEXT,
+body TEXT,
+service_center TEXT,
+locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,
+seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0,
+hidden INTEGER DEFAULT 0,
+group_id INTEGER,
+group_type INTEGER,
+delivery_date INTEGER);
+'''
+
+# samsung_sgh_i9970_2_2_1
+sms_samsung_sgh_i9970_2_2_1 = '''CREATE TABLE sms
+(_id INTEGER PRIMARY KEY AUTOINCREMENT,
+thread_id INTEGER,
+address TEXT,
+person INTEGER,
+date INTEGER,
+protocol INTEGER,
+read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,
+type INTEGER,
+reply_path_present INTEGER,
+subject TEXT,
+body TEXT,
+service_center TEXT,
+locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,
+seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0);
+'''
+
+# samsung_sph_d710_4_0_4
+sms_samsung_sph_d710_4_0_4 = '''CREATE TABLE sms
+(_id INTEGER PRIMARY KEY AUTOINCREMENT,
+thread_id INTEGER,
+address TEXT,
+person INTEGER,
+date INTEGER,
+protocol INTEGER,
+read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,
+type INTEGER,
+reply_path_present INTEGER,
+subject TEXT,
+body TEXT,
+service_center TEXT,
+locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,
+seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0,
+hidden INTEGER DEFAULT 0,
+group_id INTEGER,
+group_type INTEGER,
+delivery_date INTEGER,
+service_category INTEGER,
+category INTEGER,
+response_type INTEGER,
+severity INTEGER,
+urgency INTEGER,
+certainty INTEGER,
+identifier INTEGER,
+alert_handling INTEGER,
+expires INTEGER,
+language INTEGER,
+cmas_sms_expired INTEGER DEFAULT 1);
+'''
+
+# samsung_GT_9100_4_0_4
+sms_samsung_GT_9100_4_0_4 = '''CREATE TABLE sms
+(_id INTEGER PRIMARY KEY AUTOINCREMENT,
+thread_id INTEGER,
+address TEXT,
+person INTEGER,
+date INTEGER,
+date_sent INTEGER DEFAULT 0,
+protocol INTEGER,
+read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,
+type INTEGER,
+reply_path_present INTEGER,
+subject TEXT,
+body TEXT,
+service_center TEXT,
+locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,
+seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0,
+hidden INTEGER DEFAULT 0,
+group_id INTEGER,
+group_type INTEGER,
+delivery_date INTEGER);
+'''
+
+# samsung_GT_9250_4_2_2
+sms_samsung_GT_9250_4_2_2 = '''CREATE TABLE sms
+(_id INTEGER PRIMARY KEY,
+thread_id INTEGER,
+address TEXT,
+person INTEGER,
+date INTEGER,
+date_sent INTEGER DEFAULT 0,
+protocol INTEGER,
+read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,
+type INTEGER,
+reply_path_present INTEGER,
+subject TEXT,
+body TEXT,
+service_center TEXT,
+locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,
+seen INTEGER DEFAULT 0);
+'''
+
+# sansung_5580_2_3_4
+sms_sansung_5580_2_3_4 = '''CREATE TABLE sms
+(_id INTEGER PRIMARY KEY AUTOINCREMENT,
+thread_id INTEGER,
+address TEXT,
+person INTEGER,
+date INTEGER,
+protocol INTEGER,
+read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,
+type INTEGER,
+reply_path_present INTEGER,
+subject TEXT,
+body TEXT,
+service_center TEXT,
+locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,
+seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0,
+delivery_date INTEGER);
+'''
+
+# sansung_GT_I9000_2_3_4
+sms_sansung_GT_I9000_2_3_4 = '''CREATE TABLE sms
+(_id INTEGER PRIMARY KEY AUTOINCREMENT,
+thread_id INTEGER,
+address TEXT,
+person INTEGER,
+date INTEGER,
+protocol INTEGER,
+read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,
+type INTEGER,
+reply_path_present INTEGER,
+subject TEXT,
+body TEXT,
+service_center TEXT,
+locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,
+seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0);
+'''
+
+# sansung_GT_I9100G_4_0_4
+sms_sansung_GT_I9100G_4_0_4 = '''CREATE TABLE sms
+(_id INTEGER PRIMARY KEY AUTOINCREMENT,
+thread_id INTEGER,
+address TEXT,
+person INTEGER,
+date INTEGER,
+date_sent INTEGER DEFAULT 0,
+protocol INTEGER,
+read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,
+type INTEGER,
+reply_path_present INTEGER,
+subject TEXT,
+body TEXT,
+service_center TEXT,
+locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,
+seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0,
+hidden INTEGER DEFAULT 0,
+group_id INTEGER,
+group_type INTEGER,
+delivery_date INTEGER);
+'''
+
+# sansung_SGH_I997_2_2_1
+sms_sansung_SGH_I997_2_2_1 = '''CREATE TABLE sms
+(_id INTEGER PRIMARY KEY AUTOINCREMENT,
+thread_id INTEGER,
+address TEXT,
+person INTEGER,
+date INTEGER,
+protocol INTEGER,
+read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,
+type INTEGER,
+reply_path_present INTEGER,
+subject TEXT,
+body TEXT,
+service_center TEXT,
+locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,
+seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0);
+'''
+
+# sansung_SGH_T759_2_3_3
+sms_sansung_SGH_T759_2_3_3 = '''CREATE TABLE sms
+(_id INTEGER PRIMARY KEY AUTOINCREMENT,
+thread_id INTEGER,
+address TEXT,
+person INTEGER,
+date INTEGER,
+protocol INTEGER,
+read INTEGER DEFAULT 0,
+status INTEGER DEFAULT -1,
+type INTEGER,
+reply_path_present INTEGER,
+subject TEXT,
+body TEXT,
+service_center TEXT,
+locked INTEGER DEFAULT 0,
+error_code INTEGER DEFAULT 0,
+seen INTEGER DEFAULT 0,
+deletable INTEGER DEFAULT 0);
+'''
+
+sms_device_schemas = {
+  "htc_2_2_1" : sms_htc_2_2_1,
+  "" : sms_,
+  "samsung_GT_i897or9000_2_3_4" : sms_samsung_GT_i897or9000_2_3_4,
+  "samsung_gt_i9001_2_3_6" : sms_samsung_gt_i9001_2_3_6,
+  "samsung_gt_i9003_2_3_5" : sms_samsung_gt_i9003_2_3_5,
+  "samsung_gt_i9300_4_1_2" : sms_samsung_gt_i9300_4_1_2,
+  "samsung_gt_n7000_4_0_3" : sms_samsung_gt_n7000_4_0_3,
+  "samsung_GT_N7000_4_0_4" : sms_samsung_GT_N7000_4_0_4,
+  "samsung_gt_n7100_4_1_1" : sms_samsung_gt_n7100_4_1_1,
+  "samsung_gt_n8000_4_1_1" : sms_samsung_gt_n8000_4_1_1,
+  "samsung_gt_p1000_2_2_1" : sms_samsung_gt_p1000_2_2_1,
+  "samsung_gt_p7500_4_0_4" : sms_samsung_gt_p7500_4_0_4,
+  "samsung_gt_s5570_2_2_1" : sms_samsung_gt_s5570_2_2_1,
+  "samsung_P1500_4_0_3" : sms_samsung_P1500_4_0_3,
+  "samsung_s5670_2_2_1" : sms_samsung_s5670_2_2_1,
+  "samsung_s5830_2_3_4" : sms_samsung_s5830_2_3_4,
+  "samsung_SCH_I909_2_2_2" : sms_samsung_SCH_I909_2_2_2,
+  "samsung_sgh_i927_4_0_4" : sms_samsung_sgh_i927_4_0_4,
+  "samsung_sgh_i9970_2_2_1" : sms_samsung_sgh_i9970_2_2_1,
+  "samsung_sph_d710_4_0_4" : sms_samsung_sph_d710_4_0_4,
+  "samsung_GT_9100_4_0_4" : sms_samsung_GT_9100_4_0_4,
+  "samsung_GT_9250_4_2_2" : sms_samsung_GT_9250_4_2_2,
+  "sansung_5580_2_3_4" : sms_sansung_5580_2_3_4,
+  "sansung_GT_I9000_2_3_4" : sms_sansung_GT_I9000_2_3_4,
+  "sansung_GT_I9100G_4_0_4" : sms_sansung_GT_I9100G_4_0_4,
+  "sansung_SGH_I997_2_2_1" : sms_sansung_SGH_I997_2_2_1,
+  "sansung_SGH_T759_2_3_3" : sms_sansung_SGH_T759_2_3_3 }
 

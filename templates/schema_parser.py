@@ -45,6 +45,14 @@ def process_raw_contacts_schema(schema):
 	tmp_schema = tmp_schema.replace(",", ",\n")
 	return tmp_schema
 
+def process_sms_schema(schema):
+	tmp_schema = schema
+	tmp_schema = tmp_schema.replace("CREATE TABLE sms ",
+																	"CREATE TABLE sms \n")
+	tmp_schema = tmp_schema.replace(" ,", ",")
+	tmp_schema = tmp_schema.replace(", ", ",")
+	tmp_schema = tmp_schema.replace(",", ",\n")
+	return tmp_schema
 
 def parse_schema(parsed_path, output_path, split_chars, table_name,
 	fprocess_schema):
@@ -55,6 +63,8 @@ def parse_schema(parsed_path, output_path, split_chars, table_name,
 		for d in os.walk(parsed_path):
 			for f in d[2]:
 				# pprint(os.path.join(d[0], f))
+				if os.path.splitext(f)[1] <> ".db":
+					continue
 				device = f.split(split_chars)[0]
 				device = process_device_name(device)
 				devices.append(device)
@@ -66,7 +76,7 @@ def parse_schema(parsed_path, output_path, split_chars, table_name,
 				schema = fprocess_schema(schema)
 
 				line1 = "# %s\n" % device
-				line2 = "data_%s = '''%s'''\n\n" % (device, schema)
+				line2 = "%s_%s = '''%s'''\n\n" % (table_name, device, schema)
 
 				fw.write(line1)
 				fw.write(line2)
@@ -84,18 +94,13 @@ def parse_schema(parsed_path, output_path, split_chars, table_name,
 
 
 if __name__ == '__main__':
-	parsed_path = "../TestResource/contact"
+	parsed_path = "../TestResource/sms"
 
 	# parse_schema(parsed_path, output, split_chars, table_name, fprocess_schema)
 	parse_schema(parsed_path,
-							 "./schema_for_data.py",
-							 "contacts2.db",
-							 "data",
-							 process_data_schema)
+							 "./schema_for_sms.py",
+							 "mmssms.db",
+							 "sms",
+							 process_sms_schema)
 
-	parse_schema(parsed_path,
-							 "./schema_for_raw_contacts.py",
-							 "contacts2.db",
-							 "raw_contacts",
-							 process_raw_contacts_schema)
 

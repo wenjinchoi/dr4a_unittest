@@ -151,6 +151,7 @@ class SMSTestCase(unittest.TestCase):
 		fetchSQL = "SELECT address, thread_id, date, type, body " \
 			+ "FROM sms WHERE isdeleted = 1"
 		result = fetchallWithSQL(self.output_db_filepath, fetchSQL)
+		self.assertTrue(result, "Could not find any records.")
 
 		leave_times = 100 - last_record_size
 		self.assertLessEqual(leave_times * 'a', result[0][4])
@@ -197,6 +198,7 @@ class SMSTestCase(unittest.TestCase):
 		fetchSQL = "SELECT address, thread_id, date, type, body " \
 			+ "FROM sms WHERE isdeleted = 1"
 		result = fetchallWithSQL(self.output_db_filepath, fetchSQL)
+		self.assertTrue(result, "Could not find any records.")
 
 		times = 100 - record_size_4 - record_size_5
 		self.assertLessEqual(times * 'a', result[0][4])
@@ -576,19 +578,22 @@ class SMSTestCase(unittest.TestCase):
 		pass
 
 	# Scenario simulation
+	@unittest.skip("not prepared")
 	def testRandomDelete(self):
 		# 插入一批数据，随机删除其中的若干条
-
 		pass
 
+	@unittest.skip("not prepared")
 	def testDeleteAllReordOfAThreadID(self):
 		# 删除同一 thread_id 的记录，即删除整个对话
 		pass
 
+	@unittest.skip("not prepared")
 	def testDeleteAllReordOfSeveralThreadID(self):
 		# 删除若干各 thread_id 的记录，即删除若干个个对话
 		pass
 
+	@unittest.skip("not prepared")
 	def testDeleteRecordsGreaterThanAPage(self):
 		# 删除一批记录，该批记录的长度大于一个PageSize的大小，使得 Sqlite 发生自收缩
 		#（该db文件需开启 auto_vacuum ）
@@ -618,6 +623,14 @@ class Samsung_gts5670_2_2_1_TestCase(SMSTestCase):
 class Samsung_GT_N7000_4_0_4_TestCase(SMSTestCase):
 	def setUp(self):
 		self.initWithDeviceAndSchema(testDeviceOfMmssms.testDevice6)
+
+class Samsung_gt_i9300_4_1_2_TestCase(SMSTestCase):
+	def setUp(self):
+		self.initWithDeviceAndSchema(testDeviceOfMmssms.testDevice8)
+
+class Samsung_gt_n7100_4_1_1_TestCase(SMSTestCase):
+	def setUp(self):
+		self.initWithDeviceAndSchema(testDeviceOfMmssms.testDevice9)
 
 if __name__ == '__main__':
 	unittest.main()

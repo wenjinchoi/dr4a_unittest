@@ -6,7 +6,7 @@
 
 .DS_Store
 
-TestResource/.DS_Store
+./TestResource/.DS_Store
 
 *.svn
 
