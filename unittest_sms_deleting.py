@@ -101,6 +101,8 @@ class SMSTestCase(unittest.TestCase):
 			('10086', 2, 1357005601, 1, 'Record 2'))
 
 		self.insertAndDeleteLeftTheFirstOne(self.tmpdb_path, testData)
+		self.parsing_db(self.tmpdb_path, self.output_db_filepath)
+		self.checkAllTestData(self.output_db_filepath, testData)
 
 		#  -----  faked  -----
 		def faked_process(db_file):
@@ -113,13 +115,6 @@ class SMSTestCase(unittest.TestCase):
 					curs.execute(insertSQL, testData[n])
 				conn.commit()
 		#  -----  faked  -----
-
-		if not faked:
-			self.parsing_db(self.tmpdb_path, self.output_db_filepath)
-		else:
-			faked_process(self.output_db_filepath)
-
-		self.checkAllTestData(self.output_db_filepath, testData)
 
 	def testOneRecordInFreeBlock(self):
 		testData = (

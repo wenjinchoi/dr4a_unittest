@@ -19,10 +19,13 @@ class DeviceInfo(Structure):
                                     self.model,
                                     self.OSVersion);
 
-# def WSDBRecoveryCallback(callbackType, scanType, current, total):
-#    print "I'm callback."
-# pWSDBRecoveryCallback = CFUNCTYPE(c_void_p, c_int, c_int, c_int, c_int)  #回调函数类型定义
-# pWSDBRecoveryCallbackHandle = pWSDBRecoveryCallback(WSDBRecoveryCallback);
+def WSDBRecoveryCallback(callbackType, scanType, current, total):
+    print "I'm callback."
+    print current, "/", total
+    return
+
+pWSDBRecoveryCallback = CFUNCTYPE(c_void_p, c_int, c_int, c_int, c_int)  #回调函数类型定义
+pWSDBRecoveryCallbackHandle = pWSDBRecoveryCallback(WSDBRecoveryCallback);
 
 def redirect_stdout():
     sys.stdout.flush() # <--- important when redirecting to files
@@ -67,7 +70,7 @@ def scan_db(tDeviceInfo, scan_type, src_path, rec_path):
 	pFunc = c_void_p(0)
 
 	ret = libdr.WSDBScan(pwszDBPath, pwszSaveDBPath , scan_type, pFunc)
-	assert(ret == 0)
+	# assert(ret == 0)
 
 	libdr.WSDBRecoveryUnInit()
 

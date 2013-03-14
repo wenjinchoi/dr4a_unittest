@@ -9,6 +9,10 @@ import struct
 def createDB(path, smsSchema, auto_vacuum = 0):
 	if os.path.exists(path):
 		os.remove(path)
+	if os.path.exists(path + "-shm"):
+		os.remove(path + "-shm")
+	if os.path.exists(path + "-wal"):
+		os.remove(path + "-wal")
 	with sqlite3.connect(path) as conn:
 		curs = conn.cursor()
 		curs.execute('PRAGMA auto_vacuum = %d' % auto_vacuum)
