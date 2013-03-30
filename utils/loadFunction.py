@@ -27,6 +27,7 @@ def WSDBRecoveryCallback(callbackType, scanType, current, total):
 pWSDBRecoveryCallback = CFUNCTYPE(c_void_p, c_int, c_int, c_int, c_int)  #回调函数类型定义
 pWSDBRecoveryCallbackHandle = pWSDBRecoveryCallback(WSDBRecoveryCallback);
 
+# 屏蔽标准输出，需自行保存当前 stdout，用完后恢复。
 def redirect_stdout():
     sys.stdout.flush() # <--- important when redirecting to files
     newstdout = os.dup(1)
@@ -35,51 +36,47 @@ def redirect_stdout():
     os.close(devnull)
     sys.stdout = os.fdopen(newstdout, 'w')
 
-def isLoaded(lib):
-   libp = os.path.abspath(lib)
-   ret = os.system("lsof -p %d | grep %s > /dev/null" % (os.getpid(), libp))
-   return (ret == 0)
-
-def dlclose(handle):
-   libdl = ctypes.CDLL("libdl.so")
-   libdl.dlclose(handle)
 
 def scan_db(tDeviceInfo, scan_type, src_path, rec_path):
+	"""DO NOT use this function derectly for unittest.
+	Using ctypes's cdll.LoadLibrary to load function.
+	This is the actual load function.
+	"""
 	assert(os.path.exists("WSDBRecovery.dll"))
 	assert(os.path.exists("WSConfigerDB.db"))
 
+	# 屏蔽 Dll 的标准输出，扫描完恢复
 	saved_stdout = sys.stdout
 	redirect_stdout()
 
 	# Init WSDBRecovery
 	pConfigFile = c_wchar_p('WSConfigerDB.db')
-
 	deviceInfo = DeviceInfo(c_wchar_p(tDeviceInfo[0]),
 	                 		    c_wchar_p(tDeviceInfo[1]),
 	                      	c_wchar_p(tDeviceInfo[2]))
 	pDeviceInfo = addressof(deviceInfo)
-
 	libdr = cdll.LoadLibrary("WSDBRecovery.dll")
+	pwszDBLogFile = c_wchar_p('c:\\') # FIXIT: 现在写死了日志路径
+	libdr.WSDBRecoveryInitLog(pwszDBLogFile)
 	if (libdr.WSDBRecoveryInit(pConfigFile, pDeviceInfo) != 0):
 		print "WSDBRecoveryInit fail."
 		return False
 
-	# Scan and Output
+	# Scan
 	pwszDBPath = c_wchar_p(src_path)
 	pwszSaveDBPath = c_wchar_p(rec_path)
 	pFunc = c_void_p(0)
-
 	ret = libdr.WSDBScan(pwszDBPath, pwszSaveDBPath , scan_type, pFunc)
-	# assert(ret == 0)
-
 	libdr.WSDBRecoveryUnInit()
-
 	sys.stdout = saved_stdout
-
 	return True
 
-# Using multiprocessing
+
 def parsingByLoadLibrary(tDeviceInfo, scan_type, input_db_path, output_db_file):
+	"""Use this interface for unittest.
+	Using multiprocessing to load actual function.
+	Avoid the problem that the db file cannot delete.
+	"""
 	src_db_path = os.path.split(os.path.abspath(input_db_path))[0]
 	rec_db_path = os.path.split(os.path.abspath(output_db_file))[0]
 
@@ -92,7 +89,7 @@ def parsingByLoadLibrary(tDeviceInfo, scan_type, input_db_path, output_db_file):
 	p.start()
 	p.join()
 
-
+# 此类暂不可用
 class Scanner():
 	def __init__(self, DeviceInfoTuple, input_db_path, output_db_file,
 							scan_type = SCAN_TYPE_CONTACTS):

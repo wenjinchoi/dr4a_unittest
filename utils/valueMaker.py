@@ -2,6 +2,8 @@
 
 import random, string
 
+# TODO: random string 的方法性能很差，有待优化。
+
 def randomPrintableStr(randomlength=8):
 	a = list(string.printable)
 	random.shuffle(a)
@@ -49,9 +51,3 @@ def randUTF8(randomlength = 10):
 		strs.append(randUnicode())
 	return ''.join(strs)
 
-if __name__ == '__main__':
-	# print random_str(50)
-	print randStr3()
-	a = ()
-	a.append(1)
-	print a

@@ -70,6 +70,3 @@ def lastRecordSize(sqlite_file):
 	sqlite_page = getFirstPage(sqlite_file)
 	return recordSize(sqlite_page, -1)
 
-# test
-if __name__ == '__main__':
-	switch_pysqlite_version(r'C:\Python27\DLLs', SQLITE_VERSION_3_7_15)

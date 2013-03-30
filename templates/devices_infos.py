@@ -6,7 +6,7 @@ samsung_GT_I9001_2_3_6 = ('samsung', 'gt-i9001', '2.3.6')
 
 samsung_gt_i9003_2_3_5 = ('samsung', 'gt-i9003', '2.3.5')
 
-samsung_gt_i9300_4_1_2 = ('samsung', 'gt-i9300', '4.2.3')
+samsung_gt_i9300_4_1_2 = ('samsung', 'gt-i9300', '4.1.2')
 
 samsung_gt_n7000_4_0_3 = ('samsung', 'gt-n7000', '4.0.3')
 
